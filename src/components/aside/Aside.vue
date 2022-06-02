@@ -9,9 +9,7 @@
         <el-link class="aside-link"  :underline="false" href="/">
           <el-col class="el-icon-setting position font-size"></el-col>售后服务
         </el-link>
-        <el-link class="aside-link position" :underline="false" href="/" :style="true ? '' : isShow">
-          <el-col class="el-icon-top position font-size"></el-col>回顶部
-        </el-link>
+        
     </el-aside>
 </template>
 
@@ -26,13 +24,14 @@ export default {
         }
       };
   },
-  methods: {}
+  methods: {
+   
+  }
 }
 </script>
 
 
 <style>
-  
   .aside{
     width: 100px !important;
     height: 480px;
@@ -43,10 +42,20 @@ export default {
   .aside-link{
     text-align: center;
     display: block;
+    box-shadow: none;
     border: 1px #f5f5f5 solid; 
     height: 90px;
     background-color: #fff;
     line-height: 40px;
+    box-shadow: 6px 6px 6px rgba(.12,.12,.12, .12);
+  }
+  .rowTop{
+    height: 90px;
+    width: 96px;
+    border: 1px #f5f5f5 solid;
+    color: black;
+    border-radius:0px;
+    box-shadow: 6px 6px 6px rgba(.12,.12,.12, .12);
   }
   .position{
     margin-top: 20px;

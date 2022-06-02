@@ -2,10 +2,13 @@
   <el-container class="container">
     <Header></Header>
     <!-- 主体部分 -->
-    <el-main class="main">
-      main
+    <el-main id="main" class="main">
+      <div style="height: 10000px;"></div>
+      <Aside></Aside>
+      <div>
+          <el-backtop class="rowTop" visibility-height="500" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
+      </div>
     </el-main>
-    <Aside></Aside>
     <el-footer class="footer">
       <div class="bgImg"></div>
     </el-footer>
