@@ -74,7 +74,7 @@
       loginout() {
         window.sessionStorage.removeItem('login_name');
         window.sessionStorage.removeItem('user_id');
-        this.$router.push('/');
+        this.$router.push('/AdminLogin');
       },
       checkLogin(){
         if(window.sessionStorage.getItem('login_name') ==null){
@@ -82,7 +82,7 @@
             message: '请先登陆',
             type: 'warning'
           });
-          this.$router.push('/');
+          this.$router.push('/AdminLogin');
         }
       },
       reload(){

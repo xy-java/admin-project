@@ -3,9 +3,14 @@ import VueRouter from "vue-router";
 export const constantRouterMap = [
   {
     path: '/',
-    name:'AdminLogin',
-    component: () => import('@/views/login/AdminLogin.vue'),
+    name:'index',
+    component: () => import('@/views/foreViews/index.vue'),
     hidden: true
+  },
+  {
+    path: '/AdminLogin',
+    name:'AdminLogin',
+    component: () => import('@/views/login/AdminLogin.vue')
   },
   {
     path: '/container',
