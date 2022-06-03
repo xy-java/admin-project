@@ -1,14 +1,16 @@
 <template>
-  <el-container class="container">
+  <el-container class="containerIndex">
     <Header></Header>
     <!-- 主体部分 -->
     <el-main id="main" class="main">
-      <div style="height: 10000px;"></div>
+      <div style="height: 10000px;" v-show="$route.meta.showfater">test</div>
       <Aside></Aside>
       <!-- 到顶部 -->
       <div>
-          <el-backtop class="rowTop" visibility-height="500" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
+          <el-backtop class="rowTop" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
       </div>
+      
+      <router-view></router-view>
     </el-main>
     <el-footer class="footer">
       <div class="bgImg"></div>
@@ -27,12 +29,13 @@ export default {
     },
     methods: {},
     components: { Header, Aside }
+    
 }
 </script>
 
 
 <style>
-  .container{
+  .containerIndex{
     height: 120%;
     width: 100%;
   }

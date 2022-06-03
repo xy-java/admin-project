@@ -5,37 +5,50 @@ export const constantRouterMap = [
     path: '/',
     name:'index',
     component: () => import('@/views/foreViews/index.vue'),
-    hidden: true
+    hidden: true,
+    children:[
+      {
+        path: 'personalCenter',
+        name:'PersonalCenter',
+        component: () => import('@/views/foreViews/personCenter/PersonalCenter.vue'),
+        meta: {
+          showfater: false
+        }
+      }
+    ],
+    meta: {
+      showfater: true
+    }
   },
   {
     path: '/AdminLogin',
     name:'AdminLogin',
-    component: () => import('@/views/login/AdminLogin.vue')
+    component: () => import('@/views/backViews/AdminLogin.vue')
   },
   {
     path: '/container',
     name:'Container',
-    component: () => import('@/views/container/Container.vue'),
+    component: () => import('@/views/backViews/container/Container.vue'),
     children:[
       {
         path: '/dataShow',
         name:'DataShow',
-        component: () => import('@/views/dataShow/DataShow.vue')
+        component: () => import('@/views/backViews/container/dataShow/DataShow.vue')
       },
       {
         path: '/userList',
         name:'UserList',
-        component: () => import('@/views/userModel/UserList.vue')
+        component: () => import('@/views/backViews/container/userModel/UserList.vue')
       },
       {
         path: '/userAdd',
         name:'UserAdd',
-        component: () => import('@/views/userModel/UserAdd.vue')
+        component: () => import('@/views/backViews/container/userModel/UserAdd.vue')
       },
       {
         path: '/userEdit',
         name:'UserEdit',
-        component: () => import('@/views/userModel/UserEdit.vue')
+        component: () => import('@/views/backViews/container/userModel/UserEdit.vue')
       }
     ]
   }

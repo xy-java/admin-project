@@ -90,7 +90,7 @@ export default {
       })
     },
     toIndex(){
-      this.$router.push('/');
+      location.href='/';
     },
     cover () {
       this.login.name = ''

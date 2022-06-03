@@ -1,6 +1,6 @@
 <template>
     <el-aside class="aside">
-        <el-link class="aside-link" :underline="false" href="/">
+        <el-link class="aside-link" :underline="false" href="#/personalCenter">
           <el-col class="el-icon-user position font-size"></el-col>个人中心
         </el-link>
         <el-link class="aside-link"  :underline="false" href="/">
