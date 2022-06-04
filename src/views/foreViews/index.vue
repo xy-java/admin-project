@@ -25,9 +25,12 @@ import Aside from '@/components/aside/Aside.vue';
 export default {
     data() {
         return {
+          
         };
     },
-    methods: {},
+    methods: {
+     
+    },
     components: { Header, Aside }
     
 }

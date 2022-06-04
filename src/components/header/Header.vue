@@ -1,15 +1,15 @@
 <template>
   <el-header class="header">
     <el-row class="positionFirst">
-        <el-link class="margin-left" :underline="false" href="/" ><span class="link">首页</span></el-link>
+        <el-link class="margin-left" :underline="false" @click="()=>{this.$router.push('/')}" ><span class="link">首页</span></el-link>
         <el-divider direction="vertical"></el-divider>
         <el-link class="margin-left" :underline="false" @click="toLogin"><span class="link">后台管理</span></el-link>
     </el-row>
     <el-link class="cart-mini" :underline="false" :icon="count > 0 ? isFull : empty" href="/">购物车<span>({{count}})</span></el-link>
     <el-row class="positionLogin">
-      <el-link class="margin-left" :underline="false" href="/"><span class="link">登陆</span></el-link>
+      <el-link class="margin-left" :underline="false" @click="toLoginPage('login')"><span class="link">登陆</span></el-link>
       <el-divider direction="vertical"></el-divider>
-      <el-link class="margin-left" :underline="false" href="/"><span class="link">注册</span></el-link>
+      <el-link class="margin-left" :underline="false" @click="toLoginPage('register')"><span class="link">注册</span></el-link>
     </el-row>
   </el-header>
 </template>
@@ -21,12 +21,17 @@ export default {
     return {
       count: 0,
       isFull: 'el-icon-shopping-cart-full',
-      empty: 'el-icon-shopping-cart-2'
+      empty: 'el-icon-shopping-cart-2',
     }
   },
   methods: {
     toLogin () {
       this.$router.push({name:'AdminLogin'});
+    },
+    toLoginPage (status) {
+      //放入session
+      window.sessionStorage.setItem('status', status);
+      this.$router.push({name:'LoginAndRegister',params:{status:status}});
     }
   },
  

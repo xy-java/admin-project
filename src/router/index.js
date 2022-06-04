@@ -14,6 +14,14 @@ export const constantRouterMap = [
         meta: {
           showfater: false
         }
+      },
+      {
+        path: 'loginAndRegister',
+        name:'LoginAndRegister',
+        component: () => import('@/views/foreViews/login/LoginAndRegister.vue'),
+        meta: {
+          showfater: false
+        }
       }
     ],
     meta: {
