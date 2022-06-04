@@ -13,13 +13,7 @@
           <el-form-item label="密码:" prop="passwd" style="padding-left: 40px;">
             <el-input v-model="loginForm.passwd" class="inputStyle" show-password clearable placeholder="请输入密码"></el-input>
           </el-form-item>
-          <!-- 随机验证码 -->
-          <el-form-item label=" " prop="verifycode" class="identifyForm">
-            <el-input v-model="loginForm.verifycode" ref="verifycode" placeholder="验证码" class="identifyinput"></el-input>
-              <div class="identifybox" @click="refreshCode">
-                <Sidentify :identifyCode="identifyCode"></Sidentify>
-              </div>
-          </el-form-item>
+          
           <el-form-item style="margin-left: 20px;">
             <el-button type="primary" size="medium" native-type="button" @click="loginHandler" style="background: #191970;border: none">登录</el-button>
             <el-button type="danger" size="medium" native-type="button" @click="reset" style="border: none">重置</el-button>
@@ -83,20 +77,17 @@ export default{
     return {
       loginForm:{
         name:'',
-        passwd:'',
-        verifycode:''
+        passwd:''
       },
       identifyCodes: "1234567890", //验证码的数字库
       identifyCode: "",  // 验证码组件传值
       registerForm:{
         name:'',
         passwd:'',
-        email:''
+        email:'',
+        verifycode:''
       },
       loginLules:{
-        verifycode:[
-          { required: true, trigger: 'blur', validator: validateVerifycode }
-        ],
         name:[
           {required: true,message: '请输入用户名', trigger: 'blur'}
         ],
@@ -105,6 +96,9 @@ export default{
         ]
       },
       registRules:{
+        verifycode:[
+          { required: true, trigger: 'blur', validator: validateVerifycode }
+        ],
         name:[
           {required: true,message: '请输入用户名', trigger: 'blur'},
           { min: 3, message: '输入不少于三位的字母和数字', trigger: 'blur' },
