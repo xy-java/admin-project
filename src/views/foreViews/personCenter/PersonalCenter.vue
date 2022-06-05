@@ -5,8 +5,8 @@
       <el-submenu index="1">
         <template  slot="title"><i class="el-icon-user"></i>个人信息</template>
         <el-menu-item-group>
-          <el-menu-item index="/" @click="checkLogin">查看个人信息</el-menu-item>
-          <el-menu-item index="/" @click="checkLogin">修改个人信息</el-menu-item>
+          <el-menu-item index="/userSelf" @click="checkLogin">查看个人信息</el-menu-item>
+          <el-menu-item index="/userSelfEdit" @click="checkLogin">修改个人信息</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
       <el-menu-item index="/" @click="checkLogin">

@@ -8,12 +8,24 @@ export const constantRouterMap = [
     hidden: true,
     children:[
       {
-        path: 'personalCenter',
+        path: '/personalCenter',
         name:'PersonalCenter',
         component: () => import('@/views/foreViews/personCenter/PersonalCenter.vue'),
         meta: {
           showfater: false
-        }
+        },
+        children:[
+          {
+            path: '/userSelf',
+            name:'UserSelf',
+            component: () => import('@/views/foreViews/userInfo/UserSelf.vue')
+          },
+          {
+            path: '/userSelfEdit',
+            name:'UserSelfEdit',
+            component: () => import('@/views/foreViews/userInfo/UserSelfEdit.vue')
+          }
+        ]
       },
       {
         path: 'loginAndRegister',

@@ -1,19 +1,20 @@
 <template>
-  <el-form label-width="100px" ref="editForm" :model="editForm" :rules="rules">
+  
+  <el-form label-width="100px" ref="userInfoEditForm" :model="userInfoEditForm" :rules="rules">
     <el-header style="background-color: aliceblue;margin:20px">
-      <el-col>修改用户：</el-col>
+      <el-col style="line-height: 55px;">用户信息修改：</el-col>
     </el-header>
-    <el-form-item class="edit-form-item" label="用户名：" prop="login_name">
-      <el-input placeholder="请输入名称" v-model="editForm.login_name"></el-input>
+    <el-form-item class="form_item" label="用户名：" prop="login_name" >
+      <el-input placeholder="请输入名称" v-model="userInfoEditForm.login_name"></el-input>
     </el-form-item>
-    <el-form-item class="edit-form-item" label="密码：" prop="passwd">
-      <el-input placeholder="请输入密码" v-model="editForm.passwd" show-password></el-input>
+    <el-form-item class="form_item" label="密码：" prop="passwd">
+      <el-input placeholder="请输入密码" v-model="userInfoEditForm.passwd" show-password></el-input>
     </el-form-item>
-    <el-form-item class="edit-form-item" label="邮箱：" prop="email">
-      <el-input placeholder="请输入名称" v-model="editForm.email"  prop="email"></el-input>
+    <el-form-item class="form_item" label="邮箱：" prop="email">
+      <el-input placeholder="请输入名称" v-model="userInfoEditForm.email"  prop="email"></el-input>
     </el-form-item>
-    <el-form-item class="edit-form-item" label="角色：">
-      <el-select v-model="editForm.user_power" placeholder="请选择">
+    <el-form-item class="form_item" label="角色：">
+      <el-select v-model="userInfoEditForm.user_power" placeholder="请选择" disabled>
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -22,21 +23,20 @@
           </el-option>
        </el-select>
     </el-form-item>
-    <el-button class="userEditButton" type="primary" plain @click="submitForm('editForm')">保存</el-button>
-    <el-button class="userEditButton" plain @click="toList">取消</el-button>
+    <el-button class="userInfoEditButton" type="primary" plain @click="submitForm('userInfoEditForm')">保存</el-button>
+    <el-button class="userInfoEditButton" plain @click="reset">重置</el-button>
   </el-form>
 </template>
 
 <script>
 
   export default {
-    inject: ['reload'],
     data() {
       let checkName =(rule,value,callback) => {
         this.axios.get(
           '/user/queryCount',
           {
-            params:{login_name:value,user_id:this.editForm.user_id}
+            params:{login_name:value,user_id:window.sessionStorage.getItem('user_id')}
           }).then(res => {
           if(res.data > 0){
             callback(new Error('用户名已存在'));
@@ -46,12 +46,11 @@
         })
       };
       return {
-        editForm:{
-          user_id:'',
+        userInfoEditForm:{
           login_name:'',
           passwd:'',
           email:'',
-          user_power:'管理员'
+          user_power:'普通用户'
         },
         options:[{
           value:'管理员',
@@ -69,8 +68,8 @@
           ],
           passwd:[
             { required: true, message: '请输入密码', trigger: 'blur' },
-            { min: 6,  message: '输入不少于六位的字母和数字', trigger: 'blur' },
-            {max: 16, message: '输入不大于十六位的字母和数字',trigger: 'blur'}
+          { min: 6,  message: '输入不少于六位的字母和数字', trigger: 'blur' },
+          {max: 16, message: '输入不大于十六位的字母和数字',trigger: 'blur'}
           ],
           email:[
             { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
@@ -84,7 +83,7 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-              this.$confirm('此操作将修改该用户, 是否继续?', '提示', {
+            this.$confirm('此操作将修改该用户, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -92,22 +91,23 @@
               this.axios.get(
                 '/user/update',
                 {
-                  params:{
-                    user_id:this.editForm.user_id,
-                    login_name:this.editForm.login_name,
-                    passwd:this.editForm.passwd,
-                    email:this.editForm.email,
-                    user_power:this.editForm.user_power
-                  }
+                  params:this.userInfoEditForm
                 }
               ).then(res => {
                 if(res.data == "修改成功"){
+                  
                   this.$message({
                     message:'修改成功',
                     type:'success',
                     center:true
                   });
-                  this.$router.push('/userList');
+                  if(this.userInfoEditForm.login_name!=window.sessionStorage.getItem('login_name')){
+                    window.sessionStorage.setItem('login_name',this.userInfoEditForm.login_name);
+                    window.sessionStorage.setItem('passwd',this.userInfoEditForm.passwd);
+                  }
+                  this.$router.push('/');
+                  this.$router.go(0);
+
                 }else{
                   this.$message({
                     message:'修改失败,请联系管理员',
@@ -126,39 +126,40 @@
             console.log('error submit!!');
             return false;
           }
-          
         });
       },
-      
       resetForm(formName) {
         this.$refs[formName].resetFields();
       },
-      toList() {
-        this.$router.push('/userList');
+      reset() {
+        this.userInfoEditForm.login_name='';
+        this.userInfoEditForm.passwd='';
+        this.userInfoEditForm.email='';
+        this.userInfoEditForm.user_power='普通用户';
       },
     },
     created() {
         this.axios.get(
           '/user/queryById',
           {
-            params:{user_id:this.$route.params.user_id}
+            params:{user_id:window.sessionStorage.getItem('user_id')}
           }
         ).then(res => {
           console.log(res.data);
-          this.editForm = res.data;
+          this.userInfoEditForm = res.data;
         })
     }
   };
 </script>
 
 <style>
-  .edit-form-item{
+  .form_item{
     margin-top: 50px;
     width: 50%;
     position: relative;
     left: 20%;
   }
-  .userEditButton{
+  .userInfoEditButton{
     position: relative;
     margin-left: 40px;
     left: 40%;

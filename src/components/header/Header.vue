@@ -52,14 +52,18 @@ export default {
       window.sessionStorage.removeItem('isLogin');
       window.sessionStorage.removeItem('passwd');
       window.sessionStorage.removeItem('user_power');
-      this.$router.go('/');
+      this.$router.push('/');
+      this.$router.go(0);
     }
   },
-  mounted() {
+  created() {
     this.isLogin=!(window.sessionStorage.getItem('isLogin'));
     this.login_name=window.sessionStorage.getItem('login_name');
     console.log(this.isLogin);
   },
+  beforeDestroy() {
+    window.sessionStorage.clear();
+  }
 }
 </script>
 

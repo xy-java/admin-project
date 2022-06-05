@@ -118,13 +118,13 @@ export default{
         name:[
           {required: true,message: '请输入用户名', trigger: 'blur'},
           { min: 3, message: '输入不少于三位的字母和数字', trigger: 'blur' },
-          {max: 10, message: '输入不大于十位的字母和数字',},
+          {max: 10, message: '输入不大于十位的字母和数字',trigger: 'blur'},
           { validator: checkName, trigger: 'blur' }
         ],
         passwd:[
           {required: true,message: '请输入密码', trigger: 'blur'},
           { min: 6,  message: '输入不少于六位的字母和数字', trigger: 'blur' },
-          {max: 16, message: '输入不大于十六位的字母和数字',}
+          {max: 16, message: '输入不大于十六位的字母和数字',trigger: 'blur'}
         ],
         email:[
           {required: true,message: '请输入邮箱', trigger: 'blur'},
