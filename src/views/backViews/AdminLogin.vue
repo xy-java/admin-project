@@ -79,7 +79,7 @@ export default {
           this.$router.push({name:'Container',params:{login_name:result.data.login_name}});
         }else{
           this.$message( {
-              message:'登陆失败',
+              message:'登陆失败,请检查用户名和密码',
               type:'info',
               center:true
             });
