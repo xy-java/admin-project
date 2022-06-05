@@ -3,13 +3,15 @@
     <Header></Header>
     <!-- 主体部分 -->
     <el-main id="main" class="main">
-      <div style="height: 10000px;" v-show="$route.meta.showfater">test</div>
+      <div style="height: 10000px;" v-show="$route.meta.showfater">
+        <SearchBar></SearchBar>
+        <Carousel></Carousel>
+      </div>
       <Aside></Aside>
       <!-- 到顶部 -->
       <div>
           <el-backtop class="rowTop" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
       </div>
-      
       <router-view></router-view>
     </el-main>
     <el-footer class="footer">
@@ -21,6 +23,8 @@
 <script>
 import Header from '@/components/header/Header.vue';
 import Aside from '@/components/aside/Aside.vue';
+import Carousel from '@/components/containerMain/Carousel.vue';
+import SearchBar from '@/components/containerMain/SearchBar.vue';
 
 export default {
     data() {
@@ -31,7 +35,7 @@ export default {
     methods: {
      
     },
-    components: { Header, Aside }
+    components: { Header, Aside,Carousel,SearchBar }
     
 }
 </script>
