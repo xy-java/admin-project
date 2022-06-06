@@ -1,27 +1,29 @@
 <template>
   <!-- 轮播图 -->
   <el-carousel :interval="4000" type="card" height="350px" class="elCarousel">
-    <el-carousel-item v-for="item in this.carousels" :key="item">
-      <img :src="item" style="height:100%;width:100%;" />
+    <el-carousel-item v-for="item in this.carousels" :key="item.rotation_url">
+      <img :src="'http://localhost:8081/images/'+item.rotation_url" style="height:100%;width:100%;" />
     </el-carousel-item>
   </el-carousel>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default{
   name:'Carousel',
   data() {
     return {
-      carousels: [
-          require('@/assets/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg'),
-          require('@/assets/19aa98b1fcb2781c4fba33d850549jpeg.jpeg'),
-          require('@/assets/e35ff375812e6b0020b6b4e8f9583jpeg.jpeg'),
-          require('@/assets/e27858e973f5d7d3904835f46abbdjpeg.jpeg'),
-          require('@/assets/c4d93a3805b3ce3f323f7974e6f78jpeg.jpeg'),
-          require('@/assets/bbf893f792f03a54408b3b7a7ebf0jpeg.jpeg')
-        ]
+      carousels: []
     }
-  }
+  },
+  mounted() {
+      axios.get(
+        '/rotation/selectAllList'
+      ).then(res=>{
+        this.carousels = res.data;
+      })
+    },
 }
 </script>
 

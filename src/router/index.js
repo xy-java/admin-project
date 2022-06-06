@@ -69,6 +69,11 @@ export const constantRouterMap = [
         path: '/userEdit',
         name:'UserEdit',
         component: () => import('@/views/backViews/container/userModel/UserEdit.vue')
+      },
+      {
+        path: '/rotationMain',
+        name:'RotationMain',
+        component: () => import('@/views/backViews/container/rotation/RotationMain.vue')
       }
     ]
   }

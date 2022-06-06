@@ -33,6 +33,12 @@
           <el-menu-item index="5-2">选项2</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
+       <el-submenu index="6">
+        <template slot="title"><i class="el-icon-setting"></i>系统管理</template>
+        <el-menu-item-group>
+          <el-menu-item index="/rotationMain" @click="checkLogin">轮播图管理</el-menu-item>
+        </el-menu-item-group>
+      </el-submenu>
     </el-menu>
   </el-aside>
   
