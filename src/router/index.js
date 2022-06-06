@@ -74,6 +74,11 @@ export const constantRouterMap = [
         path: '/rotationMain',
         name:'RotationMain',
         component: () => import('@/views/backViews/container/rotation/RotationMain.vue')
+      },
+      {
+        path: '/skuAdd',
+        name:'SkuAdd',
+        component: () => import('@/views/backViews/container/skuInfo/SkuAdd.vue')
       }
     ]
   }

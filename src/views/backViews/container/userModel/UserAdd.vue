@@ -11,7 +11,7 @@
       <el-input placeholder="请输入密码" v-model="addForm.passwd" show-password></el-input>
     </el-form-item>
     <el-form-item class="form_item" label="邮箱：" prop="email">
-      <el-input placeholder="请输入名称" v-model="addForm.email"  prop="email"></el-input>
+      <el-input placeholder="请输入名称" v-model="addForm.email"></el-input>
     </el-form-item>
     <el-form-item class="form_item" label="角色：">
       <el-select v-model="addForm.user_power" placeholder="请选择">
