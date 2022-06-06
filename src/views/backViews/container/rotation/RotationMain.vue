@@ -11,7 +11,7 @@
       </el-table-column>
       <el-table-column  label="图片">
         <template slot-scope="scope">
-          <img :src="['http://localhost:8081/images/'+scope.row.rotation_url]" width="150px" height="150px">
+          <img :src="['http://localhost:8081/images/'+scope.row.rotation_url]" width="200px" height="150px">
         </template>
       </el-table-column>
       <el-table-column  label="类型">
