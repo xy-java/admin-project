@@ -19,21 +19,7 @@
           <el-menu-item index="3-2">选项2</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-submenu index="4">
-        <template slot="title"><i class="el-icon-takeaway-box"></i>订单管理</template>
-        <el-menu-item-group>
-          <el-menu-item index="4-1">选项1</el-menu-item>
-          <el-menu-item index="4-2">选项2</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-      <el-submenu index="5">
-        <template slot="title"><i class="el-icon-shopping-cart-2"></i>购物车管理</template>
-        <el-menu-item-group>
-          <el-menu-item index="5-1">选项1</el-menu-item>
-          <el-menu-item index="5-2">选项2</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
-       <el-submenu index="6">
+       <el-submenu index="4">
         <template slot="title"><i class="el-icon-setting"></i>系统管理</template>
         <el-menu-item-group>
           <el-menu-item index="/rotationMain" @click="checkLogin">轮播图管理</el-menu-item>
