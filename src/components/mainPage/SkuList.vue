@@ -1,8 +1,8 @@
 <template>
   <div class="mainDiv" >
-    <el-row :key="type" v-for="type in types">
+    <el-row  v-for="type in types" :key="type">
       <el-col class="mobilephone">{{type}}</el-col>
-      <el-col :span="5" v-for="item in skuTable" v-if="item.sku_type===type" :key="item" :offset="0">
+      <el-col :span="5" v-for="(item,index) in skuTable" v-if="item.sku_type===type" :key="index" :offset="0">
         <a href="/" class="ahover">
           <el-card class="elCard">
             <img :src="item.img" class="image">

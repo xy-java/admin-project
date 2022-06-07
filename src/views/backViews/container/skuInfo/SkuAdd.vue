@@ -18,11 +18,14 @@
     <el-form-item label="商品图片：" class="skuFormItem" >
       <el-upload 
         class="avatar-uploader"
-        action="/"
+        action="http://localhost:8081/sku/upload"
         :show-file-list="false"
+        ref="upload"
         :on-success="handleAvatarSuccess"
+        :auto-upload="false"
+        :on-change="uploadFile"
         :before-upload="beforeAvatarUpload">
-        <img v-if="skuAddForm.img" :src="skuAddForm.img" class="avatar">
+        <img v-if="imgUrl" :src="imgUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
     </el-form-item>
@@ -48,6 +51,7 @@
 
 <script>
 
+
   export default {
     inject: ['reload'],
     data() {
@@ -60,14 +64,13 @@
           price:'',
           sku_desc:'',
           store:'',
-          salcount:'',
+          salcount:0,
           img:'',
-          sku_summary:'',
-          parameter_id:'',
           sku_type:'手机',
           sku_status: false,
         },
-         options:[{
+        imgUrl: '',
+        options:[{
           value:'手机',
           label:'手机'
         },{
@@ -96,35 +99,70 @@
       
     },
     methods: {
-      submitForm(formName) {
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            console.log(this.skuAddForm);
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-      },
       resetForm() {
         this.skuAddForm = {
           sku_name:'',
           price:'',
           sku_desc:'',
           store:'',
-          salcount:'',
+          salcount:0,
           img:'',
           sku_summary:'',
           parameter_id:'',
           sku_type:'手机',
           sku_status:false,
-        };
+        }
       },
-      handleAvatarSuccess(){
-
+      handleAvatarSuccess(res,file){
+        console.log(file.response);
+        this.skuAddForm.img = res;
       },
-      beforeAvatarUpload(){
+      beforeAvatarUpload(file){
+        const isJPG = file.type === 'image/jpeg';
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isJPG) {
+          this.$message.error('上传头像图片只能是 JPG 格式!');
+        }
+        if (!isLt2M) {
+          this.$message.error('上传头像图片大小不能超过 2MB!');
+        }
+        return isJPG && isLt2M;
+      },
+      uploadFile(file){
+        this.imgUrl= URL.createObjectURL(file.raw);
+      },
+      submitForm(formName) {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+           
+            this.$refs.upload.submit();
+            setTimeout(() => {
+                  this.axios.get('/sku/insertSku',
+                {
+                  params:this.skuAddForm
+                }
+                ).then(res => {
+                if(res.data == '添加成功'){
+                  this.$message({
+                    message: '新增成功',
+                    type: 'success'
+                  });
+                  this.reload();
+                }else{
+                    
+                  this.$message({
+                    message: '新增失败',
+                    type: 'error'
+                  });
+                }
+              })
+            }, 1000);
 
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
       }
     }
   };
