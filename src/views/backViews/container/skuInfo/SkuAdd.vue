@@ -23,8 +23,7 @@
         ref="upload"
         :on-success="handleAvatarSuccess"
         :auto-upload="false"
-        :on-change="uploadFile"
-        :before-upload="beforeAvatarUpload">
+        :on-change="uploadFile">
         <img v-if="imgUrl" :src="imgUrl" class="avatar">
         <i v-else class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
@@ -40,7 +39,7 @@
        </el-select>
     </el-form-item>
     <el-form-item class="skuFormItem"  label="直接上架：">
-      <el-switch active-value="1" inactive-value="0" v-model="skuAddForm.sku_status"></el-switch>
+      <el-switch active-value="0" inactive-value="1" v-model="skuAddForm.sku_status"></el-switch>
     </el-form-item>
    
       <el-button class="skuFormButton" type="primary" plain @click="submitForm('skuAddForm')">保存</el-button>
@@ -67,7 +66,7 @@
           salcount:0,
           img:'',
           sku_type:'手机',
-          sku_status: 0,
+          sku_status: '0',
         },
         imgUrl: '',
         options:[{
@@ -83,8 +82,7 @@
         rules: {
           sku_name: [
             { required: true, message: '请输入商品名', trigger: 'blur' },
-            { min: 3, message: '输入不少于三位的字母和数字', trigger: 'blur' },
-            {max: 20, message: '输入不大于二十位的字母和数字',trigger: 'blur'}
+            { min: 3, message: '输入不少于三位的字母和数字', trigger: 'blur' }
           ],
           price:[
             { required: true, message: '请输入售价',trigger: 'blur'},
@@ -110,23 +108,11 @@
           sku_summary:'',
           parameter_id:'',
           sku_type:'手机',
-          sku_status:0,
+          sku_status:'0',
         }
       },
       handleAvatarSuccess(res,file){
-        console.log(file.response);
         this.skuAddForm.img = res;
-      },
-      beforeAvatarUpload(file){
-        const isJPG = file.type === 'image/jpeg';
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isJPG) {
-          this.$message.error('上传头像图片只能是 JPG 格式!');
-        }
-        if (!isLt2M) {
-          this.$message.error('上传头像图片大小不能超过 2MB!');
-        }
-        return isJPG && isLt2M;
       },
       uploadFile(file){
         this.imgUrl= URL.createObjectURL(file.raw);
@@ -147,6 +133,7 @@
                     message: '新增成功',
                     type: 'success'
                   });
+                  this.$router.push('/skuList');
                   this.reload();
                 }else{
                     

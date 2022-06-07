@@ -15,8 +15,8 @@
       <el-submenu index="3">
         <template slot="title"><i class="el-icon-goods"></i>商品管理</template>
         <el-menu-item-group>
-          <el-menu-item index="/skuAdd">新增商品信息</el-menu-item>
-          <el-menu-item index="/skuList">商品列表</el-menu-item>
+          <el-menu-item index="/skuAdd" @click="checkLogin">新增商品信息</el-menu-item>
+          <el-menu-item index="/skuList" @click="checkLogin">商品列表</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
        <el-submenu index="4">

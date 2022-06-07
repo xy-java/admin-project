@@ -9,11 +9,12 @@
         <el-button class="skuelButton" type="primary" @click="queryList">查询</el-button>
         <el-button class="skuelButton" plain @click="reset">重置</el-button>
         <el-button class="skuelButton" type="danger" @click="deleteAll">删除</el-button>
-        <el-button class="skuelButton" type="success" @click="onSelfClick">上架</el-button>
+        <el-button class="skuelButton" type="success" @click="onSelfClick" v-show="activeName=='second'">上架</el-button>
+        <el-button class="skuelButton" type="success" @click="onSelfClick" v-show="activeName=='first'">下架</el-button>
     </el-header>
     <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
     <el-tab-pane label="已上架" name="first">
-      <el-table border ref="elskuTable" :data="showData.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+      <el-table border ref="elskuTable" :data="showData.slice((currentPage1-1)*pagesize1,currentPage1*pagesize1)">
         <el-table-column type="selection"/>
         <el-table-column prop="sku_id" v-if="false" label="商品id"></el-table-column>
         <el-table-column prop="sku_name" label="商品名"></el-table-column>
@@ -34,17 +35,17 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange1"
+            @current-change="handleCurrentChange1"
             :page-sizes="[5, 10, 20]"
-            :page-size="pagesize"
+            :page-size="pagesize1"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
+            :total="total1">
         </el-pagination>
       </div>
     </el-tab-pane>
     <el-tab-pane label="未上架" name="second">
-      <el-table ref="elskuNoTable" :data="notshowData.slice((currentPage-1)*pagesize,currentPage*pagesize)">
+      <el-table ref="elskuNoTable" :data="notshowData.slice((currentPage2-1)*pagesize2,currentPage2*pagesize2)">
         <el-table-column type="selection"/>
         <el-table-column prop="sku_id" v-if="false" label="商品id"></el-table-column>
         <el-table-column prop="sku_name" label="商品名"></el-table-column>
@@ -65,12 +66,12 @@
       </el-table>
       <div class="pagination">
         <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
+            @size-change="handleSizeChange2"
+            @current-change="handleCurrentChange2"
             :page-sizes="[5, 10, 20]"
-            :page-size="pagesize"
+            :page-size="pagesize2"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
+            :total="total2">
         </el-pagination>
       </div>
 
@@ -84,13 +85,17 @@
 <script>
 
 export default{
+    inject: ['reload'],
     data(){
       return {
         showData: [],
         notshowData: [],
-        currentPage:1,
-        pagesize:10,
-        total:0,
+        currentPage1:1,
+        currentPage2:1,
+        pagesize1:10,
+        pagesize2:10,
+        total1:0,
+        total2:0,
         skuName:'',
         activeName: 'first',
         
@@ -111,18 +116,24 @@ export default{
         ).then(result=>{
           if(this.activeName=='first'){
             this.showData = result.data
-            this.total = result.data.length;
+            this.total1 = result.data.length;
           }else{
             this.notshowData = result.data
-            this.total = result.data.length;
+            this.total2 = result.data.length;
           }
         })
       },
-       handleSizeChange(val) {
-            this.pagesize=val;
+       handleSizeChange1(val) {
+            this.pagesize1=val;
         },
-      handleCurrentChange(val) {
-          this.currentPage = val;
+      handleCurrentChange1(val) {
+          this.currentPage1 = val;
+      },
+      handleSizeChange2(val) {
+            this.pagesize2=val;
+        },
+      handleCurrentChange2(val) {
+          this.currentPage2 = val;
       },
       queryList(){
         this.axios.get(
@@ -142,13 +153,13 @@ export default{
                 this.showData=[]
                 this.showData[i] = result.data[i];
                 console.log(this.showData[i]);
-                this.total = this.showData.length;
+                this.total1 = this.showData.length;
 
               }else{
                 this.activeName = 'second';
                 this.notshowData=[];
                 this.notshowData[i] = result.data[i];
-                this.total = this.notshowData.length;
+                this.total2 = this.notshowData.length;
               }
             }
           }else{
@@ -165,31 +176,88 @@ export default{
         this.skuName = '';
         this.handleList();
       },
-      onSelfClick(){},
-      deleteAll(){
-        if(this.$refs.elskuTable.selection.length>0){
-          this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+      onSelfClick(){
+        if(this.$refs.elskuTable.selection.length>0 || this.$refs.elskuNoTable.selection.length>0){
+          this.$confirm('此操作将改变该商品, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          for(let i =0;i < this.$refs.elskuTable.selection.length;i++){
-            if(this.$refs.elskuTable.selection[i].user_id == window.sessionStorage.getItem('user_id')){
-              this.$message({
-                message: '不能删除自己',
-                type: 'warning'
-              });
-            }else{
+          if(this.$refs.elskuTable.selection.length>0){
+            for(let i =0;i < this.$refs.elskuTable.selection.length;i++){
               this.axios.get(
-              '/user/deleteById',
+              '/sku/updateStatusById',
               {
                 params: {
-                  user_id: this.$refs.elskuTable.selection[i].user_id
+                  sku_id: this.$refs.elskuTable.selection[i].sku_id,
+                  sku_status: 0
                 }
               }).then(result=>{
                 console.log(result);
-                this.queryList();
+                this.reload();
               })
+            }
+          }else if(this.$refs.elskuNoTable.selection.length>0){
+            for(let i =0;i < this.$refs.elskuNoTable.selection.length;i++){
+                this.axios.get(
+                  '/sku/updateStatusById',
+                {
+                  params: {
+                    sku_id: this.$refs.elskuNoTable.selection[i].sku_id,
+                    sku_status : 1
+                  }
+                }).then(result=>{
+                  console.log(result);
+                  this.reload();
+                })
+            }
+          }
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消改变'
+          });          
+        });
+        }else{
+          this.$message({
+            message: '请选择要改变的商品',
+            type: 'warning',
+            showClose: true
+          });
+        }
+      },
+      deleteAll(){
+        if(this.$refs.elskuTable.selection.length>0 || this.$refs.elskuNoTable.selection.length>0){
+          this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          if(this.$refs.elskuTable.selection.length>0){
+            for(let i =0;i < this.$refs.elskuTable.selection.length;i++){
+              this.axios.get(
+              '/sku/deleteSkuById',
+              {
+                params: {
+                  sku_id: this.$refs.elskuTable.selection[i].sku_id
+                }
+              }).then(result=>{
+                console.log(result);
+                this.reload();
+              })
+            }
+          }else if(this.$refs.elskuNoTable.selection.length>0){
+            for(let i =0;i < this.$refs.elskuNoTable.selection.length;i++){
+                this.axios.get(
+                  '/sku/deleteSkuById',
+                {
+                  params: {
+                    sku_id: this.$refs.elskuNoTable.selection[i].sku_id
+                  }
+                }).then(result=>{
+                  console.log(result);
+                  this.reload();
+                })
             }
           }
         }).catch(() => {
@@ -200,7 +268,7 @@ export default{
         });
         }else{
           this.$message({
-            message: '请选择要删除的用户',
+            message: '请选择要删除的商品',
             type: 'warning',
             showClose: true
           });

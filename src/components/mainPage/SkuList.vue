@@ -5,8 +5,8 @@
       <el-col :span="5" v-for="(item,index) in skuTable" v-if="item.sku_type===type" :key="index" :offset="0">
         <a href="/" class="ahover">
           <el-card class="elCard">
-            <img :src="item.img" class="image">
-            <div style="padding: 10px;text-align:center;">
+            <img :src="['http://localhost:8081/' + item.img]" class="image">
+            <div style="text-align:center; font-size: smaller;">
               <span>{{item.sku_name}}</span>
             </div>
             <div style="padding: 4px;text-align:center;">
@@ -24,23 +24,22 @@ export default{
   name:'SkuList',
   data() {
     return {
-      skuTable:[
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/211bb83776a8e0c8358732c3f3aa2864.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/5713971c4bb6512743dfd06023080268.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/7fccce9e65aff2d7c913e40f4bee1b0b.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0bcd64f412dfb5e15695fa96d21ecb23.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0bcd64f412dfb5e15695fa96d21ecb23.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机1',price:'1120',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0bcd64f412dfb5e15695fa96d21ecb23.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机2',price:'1560',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0bcd64f412dfb5e15695fa96d21ecb23.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机3',price:'1680',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0bcd64f412dfb5e15695fa96d21ecb23.png?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手机'},
-        {sku_name:'手机4',price:'1750',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/b8259e8fb355acf168c66f75d375c6af.jpg?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手表'},
-        {sku_name:'手机5',price:'2100',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/b8259e8fb355acf168c66f75d375c6af.jpg?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'手表'},
-        {sku_name:'手机6',price:'2300',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0f8abb2bc3947c4679e3f1b2aafc28c0.jpg?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'电脑'},
-        {sku_name:'手机6',price:'2300',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0f8abb2bc3947c4679e3f1b2aafc28c0.jpg?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'电脑'},
-        {sku_name:'手机6',price:'2300',sku_desc:'小米手机一号',img:'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0f8abb2bc3947c4679e3f1b2aafc28c0.jpg?thumb=1&w=200&h=200&f=webp&q=90',sku_type:'电脑'}
-      ],
+      skuTable:[],
       types:['手机','电脑','手表']
     }
+  },
+  methods: {
+    createdHeadle(){
+      this.axios.get(
+        '/sku/selectSkuAll'
+      ).then(res=>{
+        console.log(res.data);
+        this.skuTable=res.data;
+      })
+    }
+  },
+  created() {
+    this.createdHeadle();
   },
 }
 </script>
