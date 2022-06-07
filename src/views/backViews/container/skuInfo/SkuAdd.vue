@@ -40,7 +40,7 @@
        </el-select>
     </el-form-item>
     <el-form-item class="skuFormItem"  label="直接上架：">
-      <el-switch v-model="skuAddForm.sku_status"></el-switch>
+      <el-switch active-value="1" inactive-value="0" v-model="skuAddForm.sku_status"></el-switch>
     </el-form-item>
    
       <el-button class="skuFormButton" type="primary" plain @click="submitForm('skuAddForm')">保存</el-button>
@@ -67,7 +67,7 @@
           salcount:0,
           img:'',
           sku_type:'手机',
-          sku_status: false,
+          sku_status: 0,
         },
         imgUrl: '',
         options:[{
@@ -110,7 +110,7 @@
           sku_summary:'',
           parameter_id:'',
           sku_type:'手机',
-          sku_status:false,
+          sku_status:0,
         }
       },
       handleAvatarSuccess(res,file){

@@ -79,6 +79,11 @@ export const constantRouterMap = [
         path: '/skuAdd',
         name:'SkuAdd',
         component: () => import('@/views/backViews/container/skuInfo/SkuAdd.vue')
+      },
+      {
+        path: '/skuList',
+        name:'SkuList',
+        component: () => import('@/views/backViews/container/skuInfo/SkuList.vue')
       }
     ]
   }
