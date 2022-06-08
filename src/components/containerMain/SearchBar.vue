@@ -3,7 +3,7 @@
   <el-row class="elAutocomplete">
     <img src="@/assets/logo.png" class="imgComplete">
     <el-row class="positionCol">
-      <el-autocomplete v-model="state" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
+      <el-autocomplete v-model="inputName" :fetch-suggestions="querySearchAsync" placeholder="请输入内容" @select="handleSelect"></el-autocomplete>
       <el-button class="autoButton" @click="handleClick"><i class="el-icon-search"></i></el-button>
     </el-row>
   </el-row>
@@ -14,40 +14,57 @@ export default{
   name:'SearchBar',
   data() {
     return {
-      restaurants: [],
-       state: ''
+      skuInfoList: [],
+      inputName: ''
     }
   },
   methods: {
       loadAll() {
-        return [
-          { "value": "速记黄焖鸡米饭", "address": "上海市长宁区北新泾街道金钟路180号1层01号摊位" },
-          { "value": "红辣椒麻辣烫", "address": "上海市长宁区天山西路492号" },
-          { "value": "(小杨生煎)西郊百联餐厅", "address": "长宁区仙霞西路88号百联2楼" },
-          { "value": "阳阳麻辣烫", "address": "天山西路389号" },
-          { "value": "南拳妈妈龙虾盖浇饭", "address": "普陀区金沙江路1699号鑫乐惠美食广场A13" }
-        ];
+        this.axios.get(
+          '/sku/searchSkuName',
+        ).then(res => {
+          var skuInfo = res.data.map((terminal) => {
+            return{
+              value: terminal.sku_name,
+              name: terminal.sku_id
+            }
+          })
+          this.skuInfoList = skuInfo;
+        })
       },
       querySearchAsync(queryString, cb) {
-        var restaurants = this.restaurants;
-        var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+        let results = this.skuInfoList;
+        results = queryString ? results.filter(this.createStateFilter(queryString)) : results;
         cb(results);
       },
       createStateFilter(queryString) {
-        return (state) => {
-          return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return (item) => {
+          return (item.value.toLowerCase().indexOf(queryString.toLowerCase()) != -1);
         };
       },
       handleSelect(item) {
-        console.log(item);
+
       },
       handleClick(){
-        console.log("搜索");
+        this.axios.get(
+          '/sku/queryByNameStatus',
+          {
+            params: {
+              sku_name: this.inputName
+            }
+          }
+        ).then(res => {
+          if(res.data.length>0){
+            window.sessionStorage.setItem("skuInfoList",JSON.stringify(res.data));
+            this.$router.push('/searchInfo');
+          }
+        })
+
       }
     },
     mounted() {
-      this.restaurants = this.loadAll();
-    }
+      this.loadAll();
+    },
 }
 </script>
 

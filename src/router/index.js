@@ -34,6 +34,14 @@ export const constantRouterMap = [
         meta: {
           showfater: false
         }
+      },
+      {
+        path:'searchInfo',
+        name:'SearchInfo',
+        component: () => import('@/views/foreViews/search/SearchInfo.vue'),
+        meta: {
+          showfater: false
+        }
       }
     ],
     meta: {

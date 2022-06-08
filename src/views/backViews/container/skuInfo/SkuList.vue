@@ -207,7 +207,6 @@ export default{
                     sku_status : 1
                   }
                 }).then(result=>{
-                  console.log(result);
                   this.reload();
                 })
             }
@@ -242,7 +241,6 @@ export default{
                   sku_id: this.$refs.elskuTable.selection[i].sku_id
                 }
               }).then(result=>{
-                console.log(result);
                 this.reload();
               })
             }
@@ -255,7 +253,6 @@ export default{
                     sku_id: this.$refs.elskuNoTable.selection[i].sku_id
                   }
                 }).then(result=>{
-                  console.log(result);
                   this.reload();
                 })
             }
@@ -277,7 +274,6 @@ export default{
       },
       toSkuEdit(sku_id){
         this.$router.push({name:'SkuEdit',params:{sku_id:sku_id}});
-        console.log(sku_id);
       }
     },
     created() {

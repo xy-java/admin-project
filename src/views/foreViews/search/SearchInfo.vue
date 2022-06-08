@@ -1,11 +1,11 @@
 <template>
-  <div class="mainDiv" >
+  <div class="searchMainDiv" >
     <el-row  v-for="type in types" :key="type">
-      <el-col class="mobilephone">{{type}}</el-col>
-      <el-col :span="5" v-for="(item,index) in skuTable" v-if="item.sku_type===type" :key="index" :offset="0">
-        <a href="/" class="ahover">
-          <el-card class="elCard">
-            <img :src="['http://localhost:8081/' + item.img]" class="image">
+      <el-col class="mobile">{{type}}</el-col>
+      <el-col :span="5" v-for="(item,index) in searchTable" v-if="item.sku_type===type" :key="index" :offset="0">
+        <a href="/" class="ahoverList">
+          <el-card class="elCard2">
+            <img :src="['http://localhost:8081/' + item.img]" class="imageList">
             <div style="text-align:center; font-size: smaller;">
               <span>{{item.sku_name}}</span>
             </div>
@@ -21,57 +21,50 @@
 
 <script>
 export default{
-  name:'SkuList',
+  name:'SearchInfo',
   data() {
     return {
-      skuTable:[],
+      searchTable:[],
       types:[]
     }
   },
   methods: {
-    createdHeadle(){
-      this.axios.get(
-        '/sku/selectSkuAll'
-      ).then(res=>{
-        this.skuTable=res.data;
-        let type = new Set();
-        for(let i=0;i<this.skuTable.length;i++){
-          type.add(this.skuTable[i].sku_type);
-        }
-        this.types = type;
-      })
-    }
   },
   created() {
-    this.createdHeadle();
+    this.searchTable = JSON.parse(window.sessionStorage.getItem("skuInfoList"));
+    let type = new Set();
+    for(let i=0;i<this.searchTable.length;i++){
+      type.add(this.searchTable[i].sku_type);
+    }
+    this.types = type;
   },
+  beforeDestroy() {
+    window.sessionStorage.removeItem("skuInfoList");
+  }
 }
 </script>
 
 <style>
-  .mainDiv{
+  .searchMainDiv{
     position: relative;
     margin-top: 50px;
     left: 18%;
     width: 80%;
   }
-  .image{
+  .imageList{
     width: 200px;
     height:200px;
     border: 1px solid #f5f5f5;
   }
-  .backgroundColor{
-    background-color: #f5f5f5;
-  }
-  .mobilephone{
+  .mobile{
     font-size: larger;
     line-height: 40px;
   }
-  .elCard{
+  .elCard2{
     height: 300px;
     width: 250px;
   }
-  .ahover{
+  .ahoverList{
     display: block;
     height: 300px;
     margin-bottom: 20px;
@@ -79,7 +72,7 @@ export default{
     width: 250px;
     text-decoration: none;
   }
-  .ahover:hover{
+  .ahoverList:hover{
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.411);
     transition: all .2s linear;
   }

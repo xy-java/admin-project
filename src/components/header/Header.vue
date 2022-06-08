@@ -59,7 +59,6 @@ export default {
   created() {
     this.isLogin=!(window.sessionStorage.getItem('isLogin'));
     this.login_name=window.sessionStorage.getItem('login_name');
-    console.log(this.isLogin);
   },
   beforeDestroy() {
     window.sessionStorage.clear();
