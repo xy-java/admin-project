@@ -37,6 +37,19 @@
             :value="item.value">
           </el-option>
        </el-select>
+      <el-form-item class="skuEditVersion" label="版本：" prop="parameter_versions" v-if="this.skuEditForm.sku_type==='手机'">
+        <el-input placeholder="请输入手机版本，以逗号分隔" v-model="skuEditForm.parameter_versions" ></el-input>
+      </el-form-item>
+      <el-form-item class="skuEditColor" label="颜色：" prop="parameter_color" v-if="this.skuEditForm.sku_type==='手机'">
+        <el-input placeholder="请输入颜色，以逗号分隔" v-model="skuEditForm.parameter_color" ></el-input>
+      </el-form-item>
+      <el-form-item class="skuEditVersion" label="配置：" prop="parameter_cp" v-if="this.skuEditForm.sku_type==='电脑'">
+        <el-input placeholder="请输入电脑配置，以逗号分隔" v-model="skuEditForm.parameter_cp" ></el-input>
+      </el-form-item>
+      <el-form-item class="skuEditVersion" label="系列：" prop="parameter_series" v-if="this.skuEditForm.sku_type==='手表'">
+        <el-input placeholder="请输入手表系列，以逗号分隔" v-model="skuEditForm.parameter_series" ></el-input>
+      </el-form-item>
+
     </el-form-item>
     <el-form-item class="skuEditFormItem"  label="直接上架：">
       <el-switch active-value="0" inactive-value="1" v-model="skuEditForm.sku_status"></el-switch>
@@ -66,8 +79,13 @@
           store:'',
           salcount:'',
           img:'',
+          parameter_id:'',
           sku_type:'',
           sku_status: '',
+          parameter_versions:'',
+          parameter_color:'',
+          parameter_cp:'',
+          parameter_series:'',
         },
         imgUrl: '',
         options:[{
@@ -93,6 +111,18 @@
             { required: true, message: '请输入库存',trigger: 'blur'},
             {type:'number',message:'请输入数字',trigger: 'blur'}
           ],
+          parameter_versions:[
+            { required: true, message: '请输入手机版本',trigger: 'blur'}
+          ],
+          parameter_color:[
+            { required: true, message: '请输入颜色',trigger: 'blur'}
+          ],
+          parameter_cp:[
+            { required: true, message: '请输入电脑配置',trigger: 'blur'}
+          ],
+          parameter_series:[
+            { required: true, message: '请输入手表系列',trigger: 'blur'}
+          ],
         }
       };
       
@@ -111,6 +141,10 @@
           parameter_id:'',
           sku_type:'手机',
           sku_status:'0',
+          parameter_versions:'',
+          parameter_color:'',
+          parameter_cp:'',
+          parameter_series:'',
         }
       },
       handleAvatarSuccess(res,file){
@@ -124,9 +158,10 @@
           if (valid) {
            
             this.$refs.upload.submit();
-            
+            console.log(this.skuEditForm);
+
             setTimeout(() => {
-                  this.axios.get('/sku/updateSku',
+                this.axios.get('/sku/updateSku',
                 {
                   params:this.skuEditForm
                 }
@@ -146,6 +181,7 @@
                   });
                 }
               })
+
             }, 1000);
 
           } else {
@@ -156,7 +192,7 @@
       }
     },
     created() {
-      this.axios.get('/sku/selectByIds',
+      this.axios.get('/sku/selectParamter',
         {
           params:{
             sku_id:this.$route.params.sku_id
@@ -185,7 +221,18 @@
     position: relative;
     left: 40%;
   }
-
+.skuEditVersion{
+    width: 70%;
+    position: absolute;
+    left: 30%;
+    bottom: 342px;
+  }
+  .skuEditColor{
+    width: 70%;
+    position: absolute;
+    left: 30%;
+    bottom: 280px;
+  }
   .avatar-uploader .el-upload {
     border: 1px dashed #d9d9d9;
     cursor: pointer;

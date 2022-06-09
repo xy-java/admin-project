@@ -12,6 +12,8 @@
     <el-form-item  class="skuFormItem" label="售价：" prop="price">
       <el-input style="width: 200px;" placeholder="请输入售价" v-model.number="skuAddForm.price"></el-input>￥
     </el-form-item>
+    
+
     <el-form-item class="skuFormItem" label="库存：" prop="store">
       <el-input style="width: 200px;" placeholder="请输入库存数" v-model.number="skuAddForm.store"></el-input>
     </el-form-item>
@@ -37,6 +39,19 @@
             :value="item.value">
           </el-option>
        </el-select>
+    <el-form-item class="skuVersion" label="版本：" prop="parameter_versions" v-if="this.skuAddForm.sku_type==='手机'">
+      <el-input placeholder="请输入手机版本，以逗号分隔" v-model="skuAddForm.parameter_versions" ></el-input>
+    </el-form-item>
+    <el-form-item class="skuColor" label="颜色：" prop="parameter_color" v-if="this.skuAddForm.sku_type==='手机'">
+      <el-input placeholder="请输入颜色，以逗号分隔" v-model="skuAddForm.parameter_color" ></el-input>
+    </el-form-item>
+    <el-form-item class="skuVersion" label="配置：" prop="parameter_cp" v-if="this.skuAddForm.sku_type==='电脑'">
+      <el-input placeholder="请输入电脑配置，以逗号分隔" v-model="skuAddForm.parameter_cp" ></el-input>
+    </el-form-item>
+    <el-form-item class="skuVersion" label="系列：" prop="parameter_series" v-if="this.skuAddForm.sku_type==='手表'">
+      <el-input placeholder="请输入手表系列，以逗号分隔" v-model="skuAddForm.parameter_series" ></el-input>
+    </el-form-item>
+
     </el-form-item>
     <el-form-item class="skuFormItem"  label="直接上架：">
       <el-switch active-value="0" inactive-value="1" v-model="skuAddForm.sku_status"></el-switch>
@@ -67,6 +82,10 @@
           img:'',
           sku_type:'手机',
           sku_status: '0',
+          parameter_versions : '',
+          parameter_color : '',
+          parameter_cp  : '',
+          parameter_series  : '',
         },
         imgUrl: '',
         options:[{
@@ -91,6 +110,18 @@
           store:[
             { required: true, message: '请输入库存',trigger: 'blur'},
             {type:'number',message:'请输入数字',trigger: 'blur'}
+          ],
+          parameter_versions:[
+            { required: true, message: '请输入手机版本',trigger: 'blur'}
+          ],
+          parameter_color:[
+            { required: true, message: '请输入颜色',trigger: 'blur'}
+          ],
+          parameter_cp:[
+            { required: true, message: '请输入电脑配置',trigger: 'blur'}
+          ],
+          parameter_series:[
+            { required: true, message: '请输入手表系列',trigger: 'blur'}
           ],
         }
       };
@@ -160,6 +191,18 @@
     width: 50%;
     position: relative;
     left: 20%;
+  }
+  .skuVersion{
+    width: 70%;
+    position: absolute;
+    left: 30%;
+    bottom: 342px;
+  }
+  .skuColor{
+    width: 70%;
+    position: absolute;
+    left: 30%;
+    bottom: 280px;
   }
   .skuFormButton{
     position: relative;
