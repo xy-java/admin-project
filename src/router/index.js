@@ -42,6 +42,14 @@ export const constantRouterMap = [
         meta: {
           showfater: false
         }
+      },
+      {
+        path:'buyPage',
+        name:'BuyPage',
+        component: () => import('@/views/foreViews/buy/BuyPage.vue'),
+        meta: {
+          showfater: false
+        }
       }
     ],
     meta: {

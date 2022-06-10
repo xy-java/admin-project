@@ -3,7 +3,7 @@
     <el-row  v-for="type in types" :key="type">
       <el-col class="mobilephone">{{type}}</el-col>
       <el-col :span="5" v-for="(item,index) in skuTable" v-if="item.sku_type===type" :key="index" :offset="0">
-        <a href="/" class="ahover">
+        <a class="ahover" @click="toBuyPage(item.sku_id)">
           <el-card class="elCard">
             <img :src="['http://localhost:8081/' + item.img]" class="image">
             <div style="text-align:center; font-size: smaller;">
@@ -40,6 +40,10 @@ export default{
         }
         this.types = type;
       })
+    },
+    toBuyPage(sku_id){
+      window.sessionStorage.setItem("sku_id",sku_id);
+      this.$router.push('buyPage');
     }
   },
   created() {
