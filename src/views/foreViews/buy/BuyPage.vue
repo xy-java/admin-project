@@ -4,7 +4,7 @@
       <el-row>
         <!-- 放图片 -->
         <el-col :span="7" :push="3">
-          <img :src="'http://localhost:8081/' + this.skuInfoList.img" style="width:100%;height: 100%;" />
+          <img :src="imgUrl" style="width:100%;height: 100%;" />
         </el-col>
         <!-- 放产品信息 -->
         <el-col :span="11" :push="3">
@@ -13,14 +13,24 @@
           <el-row class="price padding-left font-size">{{this.skuInfoList.price}}元</el-row>
           <el-row><div style="border-bottom: 1px solid #e0e0e0;margin:20px 0 20px 12px;"></div></el-row>
           <el-row class="address padding-left">地址</el-row>
-          <el-row class="font-size padding-left chosePro">选择版本</el-row>
-          <el-row class="version">
+          <el-row v-if="this.skuInfoList.sku_type=='手机'" class="font-size padding-left chosePro">选择版本</el-row>
+          <el-row v-if="this.skuInfoList.sku_type=='手机'" class="version">
             
           </el-row>
-          <el-row class="font-size padding-left chosePro">选择颜色</el-row>
-          <el-row class="version">
+          <el-row v-if="this.skuInfoList.sku_type=='手机'" class="font-size padding-left chosePro">选择颜色</el-row>
+          <el-row v-if="this.skuInfoList.sku_type=='手机'" class="version">
+
+          </el-row>
+          <el-row v-if="this.skuInfoList.sku_type=='电脑'" class="font-size padding-left chosePro">选择配置</el-row>
+          <el-row v-if="this.skuInfoList.sku_type=='电脑'" class="version">
             
           </el-row>
+
+          <el-row v-if="this.skuInfoList.sku_type=='手表'" class="font-size padding-left chosePro">选择表系列</el-row>
+          <el-row v-if="this.skuInfoList.sku_type=='手表'" class="version">
+            
+          </el-row>
+
           <el-row class="info padding-left">购买详情</el-row>
           <el-row class="padding-left cartButton">
             <el-button class="buttonCart" type="primary">加入购物车</el-button>
@@ -44,13 +54,13 @@ export default{
       colorList:[],
       cpList:[],
       seriesList:[],
-      active:true,
-      before:'ulList',
-      after:'ulListActive',
+      imgUrl:'',
     }
   },
   methods: {
-    
+    changeColor(){
+
+    }
   },
   // beforeDestroy() {
   //   window.sessionStorage.removeItem("sku_id");
@@ -64,14 +74,13 @@ export default{
         }
       }
     ).then(res=>{
-      console.log(res.data);
       this.parameterList=res.data[0].paramterInfo[0];
       this.versionList = this.parameterList.parameter_versions.split(',');
       this.colorList = this.parameterList.parameter_color.split(',');
       this.cpList = this.parameterList.parameter_cp.split(',');
       this.seriesList = this.parameterList.parameter_series.split(',');
       this.skuInfoList = res.data[0].skuInfo[0];
-      console.log(this.versionList);
+      this.imgUrl = 'http://localhost:8081/' + this.skuInfoList.img;
     })
   },
   components:{
@@ -82,7 +91,6 @@ export default{
 
 <style>
   .border{
-    
     border: 1px solid red;
   }
   .h2{
@@ -128,8 +136,6 @@ export default{
   .version{
     margin-top: 20px;
     margin-left: 12px;
-    height: 200px;
-    border: 1px red solid;
   }
   .cartButton{
     margin-top: 30px;
@@ -147,4 +153,7 @@ export default{
     width: 220px;
     height: 50px;
   }
+  
+  
+ 
 </style>

@@ -7,11 +7,11 @@
         <SearchBar></SearchBar>
         <Carousel></Carousel>
         <SkuList></SkuList>
+        <Aside></Aside>
       </div>
-      <Aside></Aside>
       <!-- 到顶部 -->
       <div>
-          <el-backtop class="rowTop" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
+          <el-backtop :visibility-height="200" class="rowTop" target=".main" :bottom="180" :right="30"><div class="el-icon-top font-size"></div></el-backtop>
       </div>
       <router-view></router-view>
     </el-main>
