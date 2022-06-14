@@ -24,6 +24,11 @@ export const constantRouterMap = [
             path: '/userSelfEdit',
             name:'UserSelfEdit',
             component: () => import('@/views/foreViews/userInfo/UserSelfEdit.vue')
+          },
+          {
+            path:'/addressInfo',
+            name:'AddressInfo',
+            component: () => import('@/views/foreViews/address/AddressInfo.vue')
           }
         ]
       },

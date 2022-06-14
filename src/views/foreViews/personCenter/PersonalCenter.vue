@@ -9,7 +9,7 @@
           <el-menu-item index="/userSelfEdit" @click="checkLogin">修改个人信息</el-menu-item>
         </el-menu-item-group>
       </el-submenu>
-      <el-menu-item index="/" @click="checkLogin">
+      <el-menu-item index="/addressInfo" @click="checkLogin">
          <template slot="title"><i class="el-icon-more"></i>收货地址管理</template>
       </el-menu-item>
     </el-menu>
