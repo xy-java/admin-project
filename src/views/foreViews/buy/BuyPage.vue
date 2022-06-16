@@ -68,12 +68,16 @@
           </el-row>
           <el-row v-if="this.skuInfoList.sku_type=='电脑'" class="font-size padding-left chosePro">选择配置</el-row>
           <el-row v-if="this.skuInfoList.sku_type=='电脑'" class="version">
-            
+            <el-radio-group  class="cpRadio" v-for="(item,index) in cpList" :key="index" v-model="cpBase">
+              <el-radio-button :label="index">{{item}}</el-radio-button>
+            </el-radio-group>
           </el-row>
 
           <el-row v-if="this.skuInfoList.sku_type=='手表'" class="font-size padding-left chosePro">选择表系列</el-row>
           <el-row v-if="this.skuInfoList.sku_type=='手表'" class="version">
-            
+            <el-radio-group  class="cpRadio" v-for="(item,index) in seriesList" :key="index" v-model="seriesBase">
+              <el-radio-button :label="index">{{item}}</el-radio-button>
+            </el-radio-group>
           </el-row>
 
           <el-row class="info padding-left">
@@ -84,8 +88,8 @@
             <div class="sum">总计：{{this.skuInfoList.price}}元</div>
           </el-row>
           <el-row class="padding-left cartButton">
-            <el-button class="buttonCart" type="primary">加入购物车</el-button>
-            <el-button class="buyButton">立即购买</el-button>
+            <el-button class="buttonCart" type="primary" @click="addCart">加入购物车</el-button>
+            <el-button class="buyButton" @click="buyOrder">立即购买</el-button>
           </el-row>
         </el-col>
       </el-row>
@@ -110,16 +114,20 @@ export default{
       imgUrl:'',
       versionBase:0,
       colorBase:0,
+      cpBase:0,
+      seriesBase:0,
       haveStore:'',
       dialogVisible: false,
       address_level1:'',
       address_level2:'',
       address_level3:'',
       address_info:'',
+      address_id:'',
       userLogin:window.sessionStorage.getItem('user_id'),
       addressData:[],
       buttonDisabled:true,
-      selectAddressData:{}
+      selectAddressData:{},
+      
     }
   },
   methods: {
@@ -127,6 +135,42 @@ export default{
       if(val != null){
         this.selectAddressData = val;
         this.buttonDisabled = false;
+      }
+    },
+    addCart(){
+      if(window.sessionStorage.getItem('login_name') ==null){
+        this.$message({
+          message: '请先登陆',
+          type: 'warning'
+        });
+        this.$router.push('/buyPage');
+      }else{
+        let buyInfo = {
+          address_id:this.address_id,
+          version : this.versionList[this.versionBase],
+          color : this.colorList[this.colorBase],
+          cp : this.cpList[this.cpBase],
+          series : this.seriesList[this.seriesBase]
+        }
+        window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
+      }
+    },
+    buyOrder(){
+      if(window.sessionStorage.getItem('login_name') ==null){
+        this.$message({
+          message: '请先登陆',
+          type: 'warning'
+        });
+        this.$router.push('/buyPage');
+      }else{
+        let buyInfo = {
+          address_id:this.address_id,
+          version : this.versionList[this.versionBase],
+          color : this.colorList[this.colorBase],
+          cp : this.cpList[this.cpBase],
+          series : this.seriesList[this.seriesBase]
+        }
+        window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
       }
     },
     buttonAddressId(){
@@ -142,6 +186,7 @@ export default{
         this.address_level1 = CodeToText[res.data[0].address_level1];
         this.address_level2 = CodeToText[res.data[0].address_level2];
         this.address_level3 = CodeToText[res.data[0].address_level3];
+        this.address_id = res.data[0].address_id;
         this.address_info = res.data[0].address_info;
       })
     },
@@ -157,6 +202,7 @@ export default{
         this.address_level1 = CodeToText[res.data[0].address_level1];
         this.address_level2 = CodeToText[res.data[0].address_level2];
         this.address_level3 = CodeToText[res.data[0].address_level3];
+        this.address_id = res.data[0].address_id;
         this.address_info = res.data[0].address_info;
       })
     },
@@ -273,6 +319,9 @@ export default{
   }
   .versionRadio{
     margin-right: 40px;
+  }
+  .cpRadio{
+    margin-right: 20px;
   }
   .sum{
     margin-top: 30px;
