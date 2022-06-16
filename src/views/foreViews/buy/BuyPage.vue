@@ -14,19 +14,41 @@
           <el-row><div style="border-bottom: 1px solid #e0e0e0;margin:20px 0 20px 12px;"></div></el-row>
           <el-row class="address padding-left">
             <div class="el-icon-location"></div>
-            <span>北京</span>
-            <span style="margin-left: 20px;">北京市</span>
-            <span style="margin-left: 20px;">海淀区</span>
-            <span style="margin-left: 20px;">清河街道</span>
-            <el-button type="text" class="update" @click="dialogVisible = true">修改</el-button>
+            <span v-if="userLogin == null ? false : true">
+              <span style="margin-left: 20px;">{{this.address_level1}}</span>
+              <span style="margin-left: 20px;">{{this.address_level2}}</span>
+              <span style="margin-left: 20px;">{{this.address_level3}}</span>
+              <span style="margin-left: 20px; margin-right: 20px;">{{this.address_info}}</span>
+            </span>
+            <span v-else>
+              <span style="margin-left: 20px;">北京市</span>
+              <span style="margin-left: 20px;">市辖区</span>
+              <span style="margin-left: 20px;margin-right: 20px;">西城区</span>
+            </span>
+            <el-button type="text" @click="dialogVisible = true">修改</el-button>
             <el-dialog
-              title="提示"
+              title="我的收货地址"
               :visible.sync="dialogVisible"
               width="40%">
-              <span>这是一段信息</span>
-              <span slot="footer" class="dialog-footer">
+               <el-table highlight-current-row :data="addressData" style="width: 100%"  @current-change="handleCurrentChange">
+               <div slot="empty">请<a href="#/loginAndRegister" style="text-decoration: none; color:#ff6700;">登陆</a>查看</div>
+                  <el-table-column type="index" label="序号"></el-table-column>
+                  <el-table-column prop="address_id"  label="地址id"  v-if="false"></el-table-column>
+                  <el-table-column prop="derive_name" label="收货人"></el-table-column>
+                  <el-table-column label="收货地址" prop="address" align="center"></el-table-column>
+                  <el-table-column prop="address_info" label="详细地址" align="center"></el-table-column>
+                  <el-table-column
+                      prop="address_status"
+                      label="默认地址">
+                    <template slot-scope="scope">
+                      <el-tag  v-if="scope.row.address_status==0" type="success" size="mini" >默认</el-tag>
+                    </template>
+                  </el-table-column>
+                </el-table>
+
+              <span slot="footer">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="buttonAddressId" :disabled="buttonDisabled">确 定</el-button>
               </span>
             </el-dialog>
 
@@ -73,6 +95,8 @@
 <script>
 import SearchBar from '@/components/containerMain/SearchBar.vue';
 
+import { regionData,CodeToText } from "element-china-area-data";
+
 export default{
   name:'BuyPage',
   data() {
@@ -87,18 +111,74 @@ export default{
       versionBase:0,
       colorBase:0,
       haveStore:'',
-      dialogVisible: false
+      dialogVisible: false,
+      address_level1:'',
+      address_level2:'',
+      address_level3:'',
+      address_info:'',
+      userLogin:window.sessionStorage.getItem('user_id'),
+      addressData:[],
+      buttonDisabled:true,
+      selectAddressData:{}
     }
   },
   methods: {
-    changeColor(){
-
-    }
+    handleCurrentChange(val) {
+      if(val != null){
+        this.selectAddressData = val;
+        this.buttonDisabled = false;
+      }
+    },
+    buttonAddressId(){
+      this.dialogVisible = false;
+      this.axios.get(
+        '/address/selectById',
+        {
+          params:{
+            address_id:this.selectAddressData.address_id
+          }
+        }
+      ).then(res=>{
+        this.address_level1 = CodeToText[res.data[0].address_level1];
+        this.address_level2 = CodeToText[res.data[0].address_level2];
+        this.address_level3 = CodeToText[res.data[0].address_level3];
+        this.address_info = res.data[0].address_info;
+      })
+    },
+    addressLoad(){
+      this.axios.get(
+        '/address/queryStatusById',
+        {
+          params: {
+            user_id: window.sessionStorage.getItem('user_id')
+          }
+        }
+      ).then(res=>{
+        this.address_level1 = CodeToText[res.data[0].address_level1];
+        this.address_level2 = CodeToText[res.data[0].address_level2];
+        this.address_level3 = CodeToText[res.data[0].address_level3];
+        this.address_info = res.data[0].address_info;
+      })
+    },
+    loadAddressData() {
+      this.axios.get(
+        '/address/queryAddress',
+        {
+          params:{
+            user_id:window.sessionStorage.getItem('user_id')
+          }
+        }
+      ).then(res => {
+        this.addressData = res.data;
+        this.addressData.forEach(item => {
+          item.address = CodeToText[item.address_level1] + "/" + CodeToText[item.address_level2] + "/" + CodeToText[item.address_level3];
+        });
+      });
+    },
   },
-  // beforeDestroy() {
-  //   window.sessionStorage.removeItem("sku_id");
-  // },
   created() {
+    this.loadAddressData();
+    this.addressLoad();
     this.axios.get(
       '/sku/selectSkuInfoBuy',
       {

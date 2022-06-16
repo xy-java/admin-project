@@ -133,8 +133,6 @@ export default{
       },
       editData:{},
       addressData: [],
-      addressEdit: [],
-      checkStatus: false,
       address_load:'',
       selectedOptions: [],
       selectEditOptions: [],
