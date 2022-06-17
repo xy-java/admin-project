@@ -143,7 +143,6 @@ export default{
           message: '请先登陆',
           type: 'warning'
         });
-        this.$router.push('/buyPage');
       }else{
         let buyInfo = {
           address_id:this.address_id,
@@ -153,6 +152,8 @@ export default{
           series : this.seriesList[this.seriesBase]
         }
         window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
+        
+        this.$router.push('/cartPage');
       }
     },
     buyOrder(){
@@ -249,7 +250,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
   .update{
     color: #ff6700 !important;
     margin-left: 20px;

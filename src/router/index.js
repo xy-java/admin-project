@@ -55,6 +55,14 @@ export const constantRouterMap = [
         meta: {
           showfater: false
         }
+      },
+      {
+        path:'cartPage',
+        name:'CartPage',
+        component: () => import('@/views/foreViews/cartPage/CartPage.vue'),
+        meta: {
+          showfater: false
+        }
       }
     ],
     meta: {

@@ -68,7 +68,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 .positionCol{
   position: relative;
   left: 74%;
