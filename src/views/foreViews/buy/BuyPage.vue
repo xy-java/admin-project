@@ -153,7 +153,34 @@ export default{
         }
         window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
         
-        this.$router.push('/cartPage');
+        this.axios.get(
+          '/cart/insertCart',
+          {
+            params:{
+              user_id:window.sessionStorage.getItem('user_id'),
+              sku_id:this.skuInfoList.sku_id,
+              cart_num:1,
+              address_id:this.address_id,
+              sku_version:this.versionList[this.versionBase],
+              sku_color:this.colorList[this.colorBase],
+              sku_cp:this.cpList[this.cpBase],
+              sku_series:this.seriesList[this.seriesBase]
+            }
+          }
+        ).then(res=>{
+          if(res.data == '新增成功'){
+            this.$message({
+              message: '加入成功，请前往购物车查看',
+              type: 'success'
+            });
+          }else{
+            this.$message({
+              message: '加入失败',
+              type: 'warning'
+            });
+          }
+        })
+        
       }
     },
     buyOrder(){

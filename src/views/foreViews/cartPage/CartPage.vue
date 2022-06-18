@@ -5,19 +5,32 @@
       <span class="bar">我的购物车</span>
       <el-divider></el-divider>
     </div>
-    <div class="mainContext" v-if="true">
-      <el-table :data="cartData" class="eltable">
+    <div class="mainContext" v-if="isFull">
+      <el-table ref="cartTable" :data="cartData" class="eltable"  @select="change()" @select-all="change()" :header-cell-style="{'text-align':'center'}" >
         <el-table-column type="selection" label="全选"></el-table-column>
-        <el-table-column label="商品名称"></el-table-column>
-        <el-table-column label="单价"></el-table-column>
-        <el-table-column label="数量"></el-table-column>
-        <el-table-column label="小计"></el-table-column>
-        <el-table-column label="操作"></el-table-column>
+        <el-table-column label="商品名称" width="500px">
+           <template slot-scope="scope">
+              <img :src="['http://localhost:8081/'+scope.row.skuInfo.img]" width="80px" height="120px">
+              <span style="display: inline-block;position: absolute;top: 50px;">{{scope.row.skuInfo.sku_name}}
+                <span v-if="scope.row.skuInfo.sku_type==='电脑'">&nbsp;&nbsp;{{scope.row.cartInfo.sku_cp}}</span>
+                <span v-if="scope.row.skuInfo.sku_type==='手机'">&nbsp;&nbsp;{{scope.row.cartInfo.sku_version}}&nbsp;&nbsp;{{scope.row.cartInfo.sku_color}}</span>
+                <span v-if="scope.row.skuInfo.sku_type==='手表'">&nbsp;&nbsp;{{scope.row.cartInfo.sku_series}}</span>
+              </span>
+           </template>
+        </el-table-column>
+        <el-table-column label="单价（￥）" prop="skuInfo.price" align="center"></el-table-column>
+        <el-table-column label="数量"  align="center">
+          <template slot-scope="scope">
+            <el-input-number style="position: relative;" size="small" v-model="scope.row.cartInfo.cart_num" :min="1"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column label="小计（￥）" prop="sku_sum" align="center"></el-table-column>
+        <el-table-column label="操作" align="center"></el-table-column>
       </el-table>
       <el-row class="sum"> 
-        <a href="#" class="goBuy">继续购物</a>
-        <span class="divider">已选择2件</span>
-        <span class="money">合计：999元</span>
+        <a href="/" class="goBuy">继续购物</a>
+        <span class="divider">已选择{{num}}件</span>
+        <span class="money">合计：{{sumPrice}}元</span>
         <el-button class="button" @click="handleClick">去结算</el-button>
       </el-row>
     </div>
@@ -34,8 +47,51 @@
     name: 'CartPage',
     data() {
       return {
-        cartData:[]
+        cartData:[],
+        isFull: true,
+        sumPrice: 0,
+        num : 0,
+        cart_num: 1,
       }
+    },
+    methods: {
+      change(){
+        this.num = this.$refs.cartTable.selection.length;
+        this.sumPrice = this.$refs.cartTable.selection.reduce((total,item)=>{
+          return total + item.sku_sum;
+        },0);
+      },
+      loadCart(){
+        this.axios.get(
+          '/cart/findCartByUserId',
+          {
+            params:{
+              user_id:window.sessionStorage.getItem('user_id')
+            }
+          }
+        ).then(res=>{
+          if(res.data.length <= 0){
+            this.isFull = false;
+          }else{
+            this.isFull = true;
+            this.cartData = res.data;
+            console.log(this.cartData);
+            for (let i = 0; i < res.data.length; i++) {
+              this.cartData[i].sku_sum = res.data[i].cartInfo.cart_num * res.data[i].skuInfo.price;
+              this.cart_num = res.data[i].cartInfo.cart_num;
+            }
+            
+            
+          }
+          
+        })
+      },
+      handleClick(){
+      }
+    },
+   
+    created() {
+      this.loadCart();
     },
   }
 </script>
@@ -107,7 +163,7 @@
   }
   .money{
     position: relative;
-    left: 1000px;
+    left: 980px;
     color: #ff6700;
     font-size: 24px;
   }
@@ -118,6 +174,7 @@
     border: 1px solid #B3C0D1;
     width: 80%;
     position: relative;
+    text-align: center;
     left: 10%;
   }
 

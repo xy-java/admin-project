@@ -5,7 +5,7 @@
         <el-divider direction="vertical"></el-divider>
         <el-link class="margin-left" :underline="false" @click="toLogin"><span class="link">后台管理</span></el-link>
     </el-row>
-    <el-link class="cart-mini" :underline="false" :icon="count > 0 ? isFull : empty" href="/">购物车<span>({{count}})</span></el-link>
+    <el-link class="cart-mini" :underline="false" :icon="count > 0 ? isFull : empty" href="#/cartPage">购物车<span>({{count}})</span></el-link>
     <el-row class="positionLogin" v-if="isLogin">
       <el-link class="margin-left" :underline="false" @click="toLoginPage('login')"><span class="link">登陆</span></el-link>
       <el-divider direction="vertical"></el-divider>

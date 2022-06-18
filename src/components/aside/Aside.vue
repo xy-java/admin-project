@@ -5,7 +5,7 @@
             <el-col class="el-icon-user position"></el-col>个人中心
           </el-link>
         </div>
-        <el-link class="aside-link" href="/">
+        <el-link class="aside-link" href="#/cartPage">
           <el-col class="el-icon-shopping-cart-2 position"></el-col>购物车
         </el-link>
         <el-link class="aside-link" href="/">
@@ -55,14 +55,7 @@ export default {
     width: 100%;
     height: 100%;
   }
-  .rowTop{
-    height: 90px;
-    width: 96px;
-    border: 1px #f5f5f5 solid;
-    color: black;
-    border-radius:0px;
-    box-shadow: 6px 6px 6px rgba(.12,.12,.12, .12);
-  }
+  
   .position{
     margin-top: 20px;
   }

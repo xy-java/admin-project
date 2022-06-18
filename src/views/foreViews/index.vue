@@ -58,4 +58,15 @@ export default {
     height: 100%;
     background: url(https://cdn.cnbj1.fds.api.mi-img.com/staticsfile/global/slogan2020.png) no-repeat center ;
   }
+  .rowTop{
+    height: 90px;
+    width: 96px;
+    border: 1px #f5f5f5 solid;
+    color: black;
+    border-radius:0px;
+    box-shadow: 6px 6px 6px rgba(.12,.12,.12, .12);
+    position: fixed;
+    top: 770px;
+    left: 1780px;
+  }
 </style>
