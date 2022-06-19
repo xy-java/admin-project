@@ -21,11 +21,15 @@
         <el-table-column label="单价（￥）" prop="skuInfo.price" align="center"></el-table-column>
         <el-table-column label="数量"  align="center">
           <template slot-scope="scope">
-            <el-input-number style="position: relative;" size="small" v-model="scope.row.cartInfo.cart_num" :min="1"></el-input-number>
+            <el-input-number style="position: relative;" size="small" @change="getNum(scope.row.cartInfo.cart_id,scope.row.cartInfo.cart_num)" v-model="scope.row.cartInfo.cart_num" :min="1"></el-input-number>
           </template>
         </el-table-column>
         <el-table-column label="小计（￥）" prop="sku_sum" align="center"></el-table-column>
-        <el-table-column label="操作" align="center"></el-table-column>
+        <el-table-column label="操作" align="center">
+          <template slot-scope="scope">
+            <el-button icon="el-icon-close" size="small" @click="del(scope.row.cartInfo.cart_id)" circle></el-button>
+          </template>
+        </el-table-column>
       </el-table>
       <el-row class="sum"> 
         <a href="/" class="goBuy">继续购物</a>
@@ -60,6 +64,26 @@
         this.sumPrice = this.$refs.cartTable.selection.reduce((total,item)=>{
           return total + item.sku_sum;
         },0);
+      },
+      getNum(cart_id,cart_num){
+        this.axios.get('/cart/updateCart',{
+          params:{
+            cart_id,
+            cart_num
+          }
+        }).then(res=>{
+        })
+      },
+      del(cart_id){
+        this.axios.get('/cart/deleteCartById',{
+          params:{
+            cart_id
+          }
+        }).then(res=>{
+          this.loadCart();
+          this.num = 0
+          this.sumPrice = 0
+        })
       },
       loadCart(){
         this.axios.get(
