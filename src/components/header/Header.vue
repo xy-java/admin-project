@@ -89,6 +89,7 @@ export default {
           }
         }).then(res=>{
           this.loadCart();
+          location.reload()
         })
       },
     loginout(){
