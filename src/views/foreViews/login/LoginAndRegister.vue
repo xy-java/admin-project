@@ -34,14 +34,18 @@
           <el-form-item label="密码:" prop="passwd" style="padding-left: 40px;">
             <el-input v-model="registerForm.passwd" class="inputStyle" show-password clearable placeholder="输入不少于六位的字母和数字"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱:" prop="email" style="padding-left: 40px;">
-            <el-input v-model="registerForm.email" class="inputStyle"  clearable placeholder="请输入邮箱"></el-input>
+          <el-form-item label="手机号:" prop="email" style="padding-left: 40px;">
+            <el-input v-model="registerForm.email" class="inputStyle"  clearable placeholder="请输入手机号"></el-input>
           </el-form-item>
           <el-form-item label=" " prop="verifycode" class="identifyForm">
             <el-input v-model="registerForm.verifycode" ref="verifycode" placeholder="验证码" class="identifyinput"></el-input>
-              <div class="identifybox" @click="refreshCode">
+              <!-- <div class="identifybox" @click="refreshCode">
                 <Sidentify :identifyCode="identifyCode"></Sidentify>
-              </div>
+              </div> -->
+              <el-button type="primary" :disabled="codebtn" style="margin-left:20px;" @click="getCode">
+                <span>{{ sendCode}}</span>
+                
+              </el-button>
           </el-form-item>
           <el-form-item style="margin-left: 20px;">
             <el-button type="primary" size="medium" native-type="button" @click="registerHander('registerForm')" style="background: #191970;border: none">注册</el-button>
@@ -54,7 +58,6 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Sidentify from '../../../components/Sidentify.vue'
 
 
@@ -68,10 +71,12 @@ export default{
     const validateVerifycode = (rule, value, callback) => {
       if (value === "") {
         callback(new Error('请输入验证码'))
-      } else if (value !== this.identifyCode) {
-        console.log('验证码:', value);
-        callback(new Error('验证码不正确!'))
-      } else {
+      } 
+      // else if (value !== this.identifyCode) {
+      //   console.log('验证码:', value);
+      //   callback(new Error('验证码不正确!'))
+      // } 
+      else {
         callback()
       }
     }
@@ -88,6 +93,15 @@ export default{
           }
         })
     }
+    const validatePhone = (rule,value,callback)=>{
+      if (!value){
+        callback(new Error('手机号不能为空！'));
+      }
+      //使用正则表达式进行验证手机号码
+      if (!/^1[3456789]\d{9}$/.test(value)){
+        callback(new Error('手机号不正确！'));
+      }
+    }
     return {
       loginForm:{
         name:'',
@@ -96,6 +110,10 @@ export default{
       },
       identifyCodes: "1234567890", //验证码的数字库
       identifyCode: "",  // 验证码组件传值
+      sendCode: "获取验证码",
+      time_count: 60, // 倒计时时间
+      codebtn: false,  // 是否可以点击获取验证码按钮
+      timer: null,
       registerForm:{
         name:'',
         passwd:'',
@@ -127,8 +145,8 @@ export default{
           {max: 16, message: '输入不大于十六位的字母和数字',trigger: 'blur'}
         ],
         email:[
-          {required: true,message: '请输入邮箱', trigger: 'blur'},
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          {required: true,message: '请输入手机号', trigger: 'blur'},
+          { validator:validatePhone, trigger: 'blur' }
         ]
       },
       activeName : window.sessionStorage.getItem('status')===null? 'login' :window.sessionStorage.getItem('status'),
@@ -180,7 +198,7 @@ export default{
     registerHander(formName){
       this.$refs[formName].validate((valid) => {
         if(valid){
-          axios.get(
+          this.axios.get(
             '/user/insert',
             {
               params:{
@@ -203,7 +221,7 @@ export default{
               this.activeName = 'login';
             }else{
               this.$message({
-                message:'注册失败,请联系管理员',
+                message:'注册失败，请检查信息',
                 type:'info',
                 center:true
               });
@@ -217,6 +235,46 @@ export default{
         }
       })
     },
+    getCode(){
+      this.axios.get(
+        '/user/sendCode',
+        {
+          params:{
+            phoneNumber:this.registerForm.email
+          }
+        }
+      ).then(
+        res=>{
+          this.$message({
+            message:'验证码已发送,请注意查收!',
+            type:'success',
+            center:true
+          })
+          let that = this;
+          if(!that.timer){
+            that.timer = setInterval(() => {
+
+              if (that.time_count > 0) {
+
+                this.codebtn = true;
+
+                that.time_count--;
+
+                that.sendCode = "重新发送" + that.time_count + "s";
+
+              } else {
+                that.sendCode = "获取验证码";
+                clearInterval(that.timer);
+                that.timer = null;
+                that.time_count = 60;
+                this.codebtn = false;
+              }
+            }, 1000);
+          }
+        }
+      )
+    },
+   
     reset(){
       this.loginForm.name='';
       this.loginForm.passwd='';
