@@ -219,9 +219,9 @@ export default{
               this.loginForm.name = this.registerForm.name;
               this.loginForm.passwd = this.registerForm.passwd;
               this.activeName = 'login';
-            }else{
+            }else if(res.data === '验证码错误'){
               this.$message({
-                message:'注册失败，请检查信息',
+                message:'验证码错误',
                 type:'info',
                 center:true
               });
