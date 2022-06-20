@@ -12,6 +12,10 @@
       <el-menu-item index="/addressInfo" @click="checkLogin">
          <template slot="title"><i class="el-icon-more"></i>收货地址管理</template>
       </el-menu-item>
+      
+      <el-menu-item index="/" @click="checkLogin">
+         <template slot="title"><i class="el-icon-price-tag"></i>订单管理</template>
+      </el-menu-item>
     </el-menu>
   </el-aside>
   <el-container>

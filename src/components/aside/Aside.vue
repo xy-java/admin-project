@@ -9,7 +9,7 @@
           <el-col class="el-icon-shopping-cart-2 position"></el-col>购物车
         </el-link>
         <el-link class="aside-link" href="/">
-          <el-col class="el-icon-setting position"></el-col>售后服务
+          <el-col class="el-icon-setting position"></el-col>订单管理
         </el-link>
         
     </el-aside>
