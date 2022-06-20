@@ -72,6 +72,7 @@
             cart_num
           }
         }).then(res=>{
+            location.reload()
         })
       },
       del(cart_id){
@@ -83,6 +84,7 @@
           this.loadCart();
           this.num = 0
           this.sumPrice = 0
+          location.reload()
         })
       },
       loadCart(){
