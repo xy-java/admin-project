@@ -37,12 +37,12 @@
           <el-form-item label="手机号:" prop="email" style="padding-left: 40px;">
             <el-input v-model="registerForm.email" class="inputStyle"  clearable placeholder="请输入手机号"></el-input>
           </el-form-item>
-          <el-form-item label=" " prop="verifycode" class="identifyForm">
-            <el-input v-model="registerForm.verifycode" ref="verifycode" placeholder="验证码" class="identifyinput"></el-input>
+          <el-form-item label=" " class="identifyForm">
+            <el-input v-model="registerForm.verifycode"  placeholder="验证码" class="identifyinput"></el-input>
               <!-- <div class="identifybox" @click="refreshCode">
                 <Sidentify :identifyCode="identifyCode"></Sidentify>
               </div> -->
-              <el-button type="primary" :disabled="codebtn" style="margin-left:20px;" @click="getCode">
+              <el-button type="primary" :disabled="codebtn" style="margin-left:20px;" @click="getCode('registerForm')">
                 <span>{{ sendCode}}</span>
                 
               </el-button>
@@ -68,18 +68,6 @@ export default{
     Sidentify
   },
   data() {
-    const validateVerifycode = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error('请输入验证码'))
-      } 
-      // else if (value !== this.identifyCode) {
-      //   console.log('验证码:', value);
-      //   callback(new Error('验证码不正确!'))
-      // } 
-      else {
-        callback()
-      }
-    }
     const checkName = (rule, value, callback)=>{
       this.axios.get(
           '/user/queryCount',
@@ -94,13 +82,26 @@ export default{
         })
     }
     const validatePhone = (rule,value,callback)=>{
-      if (!value){
-        callback(new Error('手机号不能为空！'));
-      }
-      //使用正则表达式进行验证手机号码
-      if (!/^1[3456789]\d{9}$/.test(value)){
-        callback(new Error('手机号不正确！'));
-      }
+        if (!value){
+          callback(new Error('手机号不能为空！'));
+        }
+        //使用正则表达式进行验证手机号码
+        if (!/^1[3456789]\d{9}$/.test(value)){
+          callback(new Error('手机号不正确！'));
+        }
+        this.axios.get(
+          '/user/checkPhone',
+          {
+            params:{
+              email:this.registerForm.email
+            }
+          }).then(res => {
+            if(res.data ==="已存在"){
+              callback(new Error('手机号已注册'));
+            }else{
+              callback();
+            }
+          })
     }
     return {
       loginForm:{
@@ -114,6 +115,7 @@ export default{
       time_count: 60, // 倒计时时间
       codebtn: false,  // 是否可以点击获取验证码按钮
       timer: null,
+      code: "",
       registerForm:{
         name:'',
         passwd:'',
@@ -130,9 +132,6 @@ export default{
         ]
       },
       registRules:{
-        verifycode:[
-          { required: true, trigger: 'blur', validator: validateVerifycode }
-        ],
         name:[
           {required: true,message: '请输入用户名', trigger: 'blur'},
           { min: 3, message: '输入不少于三位的字母和数字', trigger: 'blur' },
@@ -205,7 +204,9 @@ export default{
                 login_name:this.registerForm.name,
                 passwd:this.registerForm.passwd,
                 email:this.registerForm.email,
-                user_power:this.registerForm.user_power
+                user_power:this.registerForm.user_power,
+                verifycode:this.registerForm.verifycode,
+                code:this.code
               }
             }
           ).then(res=>{
@@ -222,7 +223,13 @@ export default{
             }else if(res.data === '验证码错误'){
               this.$message({
                 message:'验证码错误',
-                type:'info',
+                type:'warning',
+                center:true
+              });
+            }else if(res.data==='该手机号已存在'){
+              this.$message({
+                message:'该手机号已存在',
+                type:'warning',
                 center:true
               });
             }
@@ -235,44 +242,54 @@ export default{
         }
       })
     },
-    getCode(){
-      this.axios.get(
-        '/user/sendCode',
-        {
-          params:{
-            phoneNumber:this.registerForm.email
-          }
-        }
-      ).then(
-        res=>{
-          this.$message({
-            message:'验证码已发送,请注意查收!',
-            type:'success',
-            center:true
-          })
-          let that = this;
-          if(!that.timer){
-            that.timer = setInterval(() => {
-
-              if (that.time_count > 0) {
-
-                this.codebtn = true;
-
-                that.time_count--;
-
-                that.sendCode = "重新发送" + that.time_count + "s";
-
-              } else {
-                that.sendCode = "获取验证码";
-                clearInterval(that.timer);
-                that.timer = null;
-                that.time_count = 60;
-                this.codebtn = false;
+    getCode(formName){
+      if(this.registerForm.email !== ""){
+            this.axios.get(
+            '/user/sendCode',
+            {
+              params:{
+                phoneNumber:this.registerForm.email
               }
-            }, 1000);
+            }
+          ).then(
+            res=>{
+              this.code = res.data;
+              this.$message({
+                message:'验证码已发送,请注意查收!',
+                type:'success',
+                center:true
+              })
+              let that = this;
+              if(!that.timer){
+                that.timer = setInterval(() => {
+
+                  if (that.time_count > 0) {
+
+                    this.codebtn = true;
+
+                    that.time_count--;
+
+                    that.sendCode = "重新发送" + that.time_count + "s";
+
+                  } else {
+                    that.sendCode = "获取验证码";
+                    clearInterval(that.timer);
+                    that.timer = null;
+                    that.time_count = 60;
+                    this.codebtn = false;
+                  }
+                }, 1000);
           }
         }
       )
+      }else{
+        this.$message({
+          message:'请输入手机号',
+          type:'warning',
+          center:true
+          });
+      }
+   
     },
    
     reset(){
