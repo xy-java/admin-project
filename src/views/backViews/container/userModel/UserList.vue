@@ -6,7 +6,7 @@
             placeholder="请输入内容"
             v-model="input_name">
         </el-input>
-        邮箱：<el-input class="userListInput"
+        手机号：<el-input class="userListInput"
             placeholder="请输入内容"
             v-model="input_email">
         </el-input>
@@ -19,7 +19,7 @@
         <el-table-column prop="user_id" label="用户Id" v-if="false"></el-table-column>
         <el-table-column prop="login_name" label="用户名称"></el-table-column>
         <el-table-column prop="passwd" label="用户密码" ></el-table-column>
-        <el-table-column prop="email" label="邮箱"></el-table-column>
+        <el-table-column prop="email" label="手机号"></el-table-column>
         <el-table-column prop="user_power" label="角色"></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">

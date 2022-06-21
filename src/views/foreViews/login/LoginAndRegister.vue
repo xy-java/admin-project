@@ -198,7 +198,7 @@ export default{
       this.$refs[formName].validate((valid) => {
         if(valid){
           this.axios.get(
-            '/user/insert',
+            '/user/register',
             {
               params:{
                 login_name:this.registerForm.name,
