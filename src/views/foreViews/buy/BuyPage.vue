@@ -103,7 +103,6 @@ import { regionData,CodeToText } from "element-china-area-data";
 
 export default{
   name:'BuyPage',
-  inject:['reload'],
   data() {
     return {
       parameterList:[],
@@ -128,7 +127,7 @@ export default{
       addressData:[],
       buttonDisabled:true,
       selectAddressData:{},
-      
+      cart_ids:[],
     }
   },
   methods: {
@@ -193,14 +192,50 @@ export default{
         });
         this.$router.push('/buyPage');
       }else{
-        let buyInfo = {
-          address_id:this.address_id,
-          version : this.versionList[this.versionBase],
-          color : this.colorList[this.colorBase],
-          cp : this.cpList[this.cpBase],
-          series : this.seriesList[this.seriesBase]
-        }
-        window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
+        // let buyInfo = {
+        //   address_id:this.address_id,
+        //   version : this.versionList[this.versionBase],
+        //   color : this.colorList[this.colorBase],
+        //   cp : this.cpList[this.cpBase],
+        //   series : this.seriesList[this.seriesBase]
+        // }
+        // window.sessionStorage.setItem('buyInfo',JSON.stringify(buyInfo));
+        this.axios.get(
+          '/cart/insertCart',
+          {
+            params:{
+              user_id:window.sessionStorage.getItem('user_id'),
+              sku_id:this.skuInfoList.sku_id,
+              cart_num:1,
+              address_id:this.address_id,
+              sku_version:this.versionList[this.versionBase],
+              sku_color:this.colorList[this.colorBase],
+              sku_cp:this.cpList[this.cpBase],
+              sku_series:this.seriesList[this.seriesBase]
+            }
+          }
+        ).then(res=>{
+          if(res.data === '新增成功'){
+            this.axios.get(
+              '/orderInfo/insertOrderInfo',
+              {
+                params:{
+                  user_id:window.sessionStorage.getItem('user_id'),
+                  address_id:this.address_id,
+                  sku_id:this.skuInfoList.sku_id,
+                  sku_version:this.versionList[this.versionBase],
+                  sku_color:this.colorList[this.colorBase],
+                  sku_cp:this.cpList[this.cpBase],
+                  sku_series:this.seriesList[this.seriesBase]
+                }
+              }
+            ).then(res=>{
+              console.log(res.data);
+              location.reload()
+            })
+          }
+        })
+
       }
     },
     buttonAddressId(){

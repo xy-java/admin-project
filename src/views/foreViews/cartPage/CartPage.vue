@@ -56,6 +56,7 @@
         sumPrice: 0,
         num : 0,
         cart_num: 1,
+        cartIds: [],
       }
     },
     methods: {
@@ -113,6 +114,27 @@
         })
       },
       handleClick(){
+        let ids = new Set();
+        for (let index = 0; index < this.$refs.cartTable.selection.length; index++) {
+            ids.add(this.$refs.cartTable.selection[index].cartInfo.cart_id);
+        }
+        this.cartIds = Array.from(ids);
+        console.log(this.cartIds)
+        this.axios.get(
+          '/orderInfo/insertOrderInfo',
+          {
+            params:{
+              cart_ids: {
+                ids: this.cartIds
+              },
+              user_id:window.sessionStorage.getItem('user_id'),
+              sku_id:''
+            }
+          }
+        ).then(res=>{
+
+        })
+
       }
     },
    

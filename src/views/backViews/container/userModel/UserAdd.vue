@@ -32,7 +32,6 @@
 
   export default {
     inject: ['reload'],
-    
     data() {
       let checkName =(rule,value,callback) => {
         this.axios.get(
