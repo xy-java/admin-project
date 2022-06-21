@@ -47,6 +47,8 @@
 </template>
 
 <script>
+import qs from 'qs'
+
   export default {
     name: 'CartPage',
     data() {
@@ -56,7 +58,6 @@
         sumPrice: 0,
         num : 0,
         cart_num: 1,
-        cartIds: [],
       }
     },
     methods: {
@@ -114,19 +115,17 @@
         })
       },
       handleClick(){
-        let ids = new Set();
+        let ids = "";
         for (let index = 0; index < this.$refs.cartTable.selection.length; index++) {
-            ids.add(this.$refs.cartTable.selection[index].cartInfo.cart_id);
+            //通过逗号加到字符串里
+            ids += this.$refs.cartTable.selection[index].cartInfo.cart_id + ",";
         }
-        this.cartIds = Array.from(ids);
-        console.log(this.cartIds)
+        console.log(ids)
         this.axios.get(
           '/orderInfo/insertOrderInfo',
           {
             params:{
-              cart_ids: {
-                ids: this.cartIds
-              },
+              cart_ids:ids,
               user_id:window.sessionStorage.getItem('user_id'),
               sku_id:''
             }
