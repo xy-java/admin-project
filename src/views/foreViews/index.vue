@@ -31,7 +31,6 @@ import SkuList from '@/components/mainPage/SkuList.vue';
 export default {
     data() {
         return {
-          
         };
     },
     methods: {

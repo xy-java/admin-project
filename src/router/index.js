@@ -63,6 +63,14 @@ export const constantRouterMap = [
         meta: {
           showfater: false
         }
+      },
+      {
+        path:'orderPage',
+        name:'OrderPage',
+        component: () => import('@/views/foreViews/orderInfo/OrderPage.vue'),
+        meta: {
+          showfater: false
+        }
       }
     ],
     meta: {

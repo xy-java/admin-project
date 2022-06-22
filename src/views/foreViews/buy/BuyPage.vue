@@ -230,8 +230,10 @@ export default{
                 }
               }
             ).then(res=>{
-              console.log(res.data);
-              location.reload()
+              if(res.data !== ' '){
+                window.sessionStorage.setItem('order_id',res.data);
+                this.$router.push('/orderPage')
+              }
             })
           }
         })

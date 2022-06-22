@@ -120,8 +120,15 @@ import qs from 'qs'
             //通过逗号加到字符串里
             ids += this.$refs.cartTable.selection[index].cartInfo.cart_id + ",";
         }
-        console.log(ids)
-        this.axios.get(
+        if(ids===""){
+          this.$message(
+            {
+              message: '请选择商品',
+              type: 'warning'
+            }
+          )
+        }else{
+          this.axios.get(
           '/orderInfo/insertOrderInfo',
           {
             params:{
@@ -131,8 +138,12 @@ import qs from 'qs'
             }
           }
         ).then(res=>{
-
+          if(res.data !== ' '){
+            window.sessionStorage.setItem('order_id',res.data);
+            this.$router.push('/orderPage');
+          }
         })
+        }
 
       }
     },
