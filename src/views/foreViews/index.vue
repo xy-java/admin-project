@@ -31,13 +31,11 @@ import SkuList from '@/components/mainPage/SkuList.vue';
 export default {
     data() {
         return {
+          
         };
     },
-    methods: {
-     
-    },
     components: { Header, Aside,Carousel,SearchBar,SkuList }
-    
+   
 }
 </script>
 

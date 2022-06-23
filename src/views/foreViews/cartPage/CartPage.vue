@@ -128,21 +128,8 @@ import qs from 'qs'
             }
           )
         }else{
-          this.axios.get(
-          '/orderInfo/insertOrderInfo',
-          {
-            params:{
-              cart_ids:ids,
-              user_id:window.sessionStorage.getItem('user_id'),
-              sku_id:''
-            }
-          }
-        ).then(res=>{
-          if(res.data !== ' '){
-            window.sessionStorage.setItem('order_id',res.data);
-            this.$router.push('/orderPage');
-          }
-        })
+          window.sessionStorage.setItem('cart_id',ids);
+          this.$router.push('/orderPage')
         }
 
       }

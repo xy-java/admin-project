@@ -7,7 +7,6 @@
       <el-steps :active="active" finish-status="success" :space="800" align-center>
         <el-step title="确认订单"></el-step>
         <el-step title="付款"></el-step>
-        <el-step title="出库发货"></el-step>
       </el-steps>
       <div v-if="active==0" class="commonDiv">
           <div>收货地址：</div>
@@ -64,7 +63,11 @@
           <el-table-column width="600px">
             <template slot-scope="scope">
               <img :src="['http://localhost:8081/'+scope.row.img]" width="80px" height="80px">
-              <span style="display: inline-block;position: absolute;top: 40px;">{{scope.row.sku_name}}</span>
+              <span style="display: inline-block;position: absolute;top: 40px;">{{scope.row.sku_name}}
+                <span v-if="scope.row.sku_type==='电脑'">&nbsp;&nbsp;{{scope.row.sku_cp}}</span>
+                <span v-if="scope.row.sku_type==='手机'">&nbsp;&nbsp;{{scope.row.sku_version}}&nbsp;&nbsp;{{scope.row.sku_color}}</span>
+                <span v-if="scope.row.sku_type==='手表'">&nbsp;&nbsp;{{scope.row.sku_series}}</span>
+              </span>
             </template>
           </el-table-column>
           <el-table-column align="center">
@@ -86,9 +89,12 @@
         <el-button class="backButton" @click="goBack"><i class="el-icon-arrow-left"></i>返回购物车</el-button>
         <el-button class="orderButton" @click="orderSure">立即下单</el-button>
       </div>
-      <div v-else-if="active==1" class="commonDiv">2</div>
-      <div v-else-if="active==2" class="commonDiv">3</div>
-      <div v-else class="commonDiv">订单完成</div>
+      <div v-else-if="active==1" class="commonDiv">
+        支付页面
+      </div>
+      <div v-else class="commonDiv">
+        
+      </div>
 
 
 
@@ -124,7 +130,10 @@ export default {
 
     methods: {
       next() {
-        if (this.active++ > 2) this.active = 0;
+        if(this.active++>1){
+          this.active = 0 ;
+        }
+          sessionStorage.setItem('active', this.active );
       },
       loadAddress(){
         this.axios.get(
@@ -135,7 +144,6 @@ export default {
             }
           }
         ).then(res=>{
-          console.log(res.data);
           this.addressList = res.data;
         })
       },
@@ -179,11 +187,10 @@ export default {
           '/orderInfo/selectSkuInfo',
           {
             params:{
-              order_id:window.sessionStorage.getItem('order_id')
+              cart_id:window.sessionStorage.getItem('cart_id')
             }
           }
         ).then(res=>{
-          console.log(res.data);
           this.skuInfo = res.data;
           for(let i=0;i<this.skuInfo.length;i++){
             this.sku_num += parseInt(this.skuInfo[i].order_num);
@@ -192,20 +199,50 @@ export default {
         })
       },
       goBack(){
-        this.$router.push('/cartPage');
+        //提示返回后数据会丢失
+        this.$confirm('返回后订单会丢失，是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('/cartPage');
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
       },
       orderSure(){
-        this.axios.get(
-          '/orderInfo/updateAddress',
-          {
-            params:{
-              address_id:this.addressList[this.addressInfo].address_id,
-              order_id:window.sessionStorage.getItem('order_id')
-            }
+        let sel = {
+            user_id:window.sessionStorage.getItem('user_id'),
+            address_id:this.addressList[this.addressInfo].address_id,
+            sku_info: this.skuInfo,
           }
+        console.log(JSON.stringify(sel));
+        this.axios.post(
+          '/orderInfo/insertOrderInfo',
+        JSON.stringify(sel),
+        {
+          
+        //设置请求头
+          headers:{
+            'Content-Type':'application/json'
+          }
+        }
         ).then(res=>{
-          if(res.data === '修改成功'){
+          if(res.data === 'success'){
+            this.$message({
+              message: '下单成功',
+              type: 'success'
+            });
             this.next();
+            location.reload();
+          } else {
+            this.$message({
+              message: '下单失败',
+              type: 'error'
+            });
           }
         })
 
@@ -215,6 +252,12 @@ export default {
     created() {
       this.loadAddress();
       this.loadTable();
+    },
+    mounted() {
+      this.active = parseInt(sessionStorage.getItem("active")) ;
+    },
+    beforeDestroy() {
+      sessionStorage.setItem('active',0);
     },
 }
 </script>

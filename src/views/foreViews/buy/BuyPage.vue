@@ -168,7 +168,7 @@ export default{
             }
           }
         ).then(res=>{
-          if(res.data == '新增成功'){
+          if(res.data !== '新增失败'){
             this.$message({
               message: '加入成功，请前往购物车查看',
               type: 'success'
@@ -215,26 +215,9 @@ export default{
             }
           }
         ).then(res=>{
-          if(res.data === '新增成功'){
-            this.axios.get(
-              '/orderInfo/insertOrderInfo',
-              {
-                params:{
-                  user_id:window.sessionStorage.getItem('user_id'),
-                  address_id:this.address_id,
-                  sku_id:this.skuInfoList.sku_id,
-                  sku_version:this.versionList[this.versionBase],
-                  sku_color:this.colorList[this.colorBase],
-                  sku_cp:this.cpList[this.cpBase],
-                  sku_series:this.seriesList[this.seriesBase]
-                }
-              }
-            ).then(res=>{
-              if(res.data !== ' '){
-                window.sessionStorage.setItem('order_id',res.data);
-                this.$router.push('/orderPage')
-              }
-            })
+          if(res.data !== '新增失败'){
+            window.sessionStorage.setItem("cart_id",res.data);
+            this.$router.push('/orderPage');
           }
         })
 
