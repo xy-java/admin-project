@@ -129,6 +129,7 @@ import qs from 'qs'
           )
         }else{
           window.sessionStorage.setItem('cart_id',ids);
+          sessionStorage.setItem('active', 0 );
           this.$router.push('/orderPage')
         }
 

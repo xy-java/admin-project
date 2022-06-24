@@ -173,7 +173,8 @@ export default{
               message: '加入成功，请前往购物车查看',
               type: 'success'
             });
-            location.reload()
+            
+
           }else{
             this.$message({
               message: '加入失败',

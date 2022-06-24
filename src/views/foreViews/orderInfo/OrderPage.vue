@@ -90,16 +90,32 @@
         <el-button class="orderButton" @click="orderSure">立即下单</el-button>
       </div>
       <div v-else-if="active==1" class="commonDiv">
-        支付页面
+        <!-- 您的订单已提交成功，请尽快付款 -->
+        <div style="text-align: center;">您的订单已提交成功，请尽快付款</div>
+        <!-- 金额 -->
+        <div style="text-align: center;">金额：<span style="margin-left:20px;color:#ff6700;">{{sku_price}}元</span></div>
+        <span style="margin-left: 80px;display: inline-block;vertical-align: middle;padding-top: 15px;">支付方式：</span>
+        <!-- 支付按钮，模拟支付操作 -->
+        <el-radio-group style="display:inline-block;margin-top:20px;margin-right: 10px;" v-model="checkPay">
+            <el-radio border label="1"><img src="@/assets/120_348_白底.png" style="height: 80%; width:80%;display: inline-block;vertical-align: middle;"></el-radio>
+            <!-- <el-radio border label="2" style="vertical-align: top;">微信支付</el-radio> -->
+        </el-radio-group>
+        <el-dialog :title="'支付成功'" :visible.sync="dialog" width="16%" center>
+          <div>
+            <p style="margin-top: 20px;text-align: center;">点击按钮继续</p>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="handlePay">确定</el-button>
+            </span>
+          </div>
+        </el-dialog>
+        
+        <el-button class="backButton" @click="goBackPay" style="position: relative;top:480px;left: 480px;"><i class="el-icon-arrow-left"></i>返回购物车</el-button>
+        <el-button class="orderButton" @click="payment" style="position: relative;top:480px;left: 500px;">立即支付</el-button>
       </div>
       <div v-else class="commonDiv">
-        
+        <div style="text-align: center;">订单完成，将于{{time}}秒后跳转至首页</div>
+        <el-button class="backButton" @click="goBackMain" style="position: relative;top:480px;left: 480px;"><i class="el-icon-arrow-left"></i>返回首页</el-button>
       </div>
-
-
-
-
-      <el-button style="margin-top: 12px;" @click="next">下一步</el-button>
     </div>
   </div>
 </template>
@@ -113,9 +129,12 @@ export default {
       return {
         active: 0,
         addressList:[],
+        time:5,
         addressInfo : 0,
         CodeToText:CodeToText,
         dialogVisible: false,
+        dialog: false,
+        checkPay:"1",
         addData:{
           user_id:window.sessionStorage.getItem('user_id'),
           address_status:'1',
@@ -125,6 +144,7 @@ export default {
         skuInfo:[],
         sku_num:0,
         sku_price:0,
+        order_id: '',
       };
     },
 
@@ -134,6 +154,27 @@ export default {
           this.active = 0 ;
         }
           sessionStorage.setItem('active', this.active );
+      },
+      
+      payment(){
+        let info = {
+            order_id : this.order_id,
+            sku_info: this.skuInfo,
+        }
+        this.dialog = true;
+        console.log(JSON.stringify(info));
+        this.axios.post(
+          '/orderInfo/paySuccess',
+          JSON.stringify(info),
+          {
+          //设置请求头
+            headers:{
+              'Content-Type':'application/json'
+            }
+          }
+        ).then(res=>{
+          
+        })
       },
       loadAddress(){
         this.axios.get(
@@ -182,6 +223,19 @@ export default {
         this.addData.address_level2 = this.selectedOptions[1];
         this.addData.address_level3 = this.selectedOptions[2];
       },
+      handlePay(){
+        this.dialog = false;
+        this.next();
+        sessionStorage.setItem('active', this.active );
+        let timer = setInterval(()=>{
+          if(this.time > 0){
+            this.time--;
+          } else {
+            clearInterval(timer);
+            this.goBackMain();
+          }
+        },1000);
+      },
       loadTable(){
         this.axios.get(
           '/orderInfo/selectSkuInfo',
@@ -213,13 +267,31 @@ export default {
           });
         });
       },
+      goBackPay(){
+        this.$confirm('订单尚未支付，是否继续？', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$router.push('/cartPage');
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      },
+      goBackMain(){
+          this.$router.push('/');
+          //刷新首页
+          this.$emit('refresh');
+      },
       orderSure(){
         let sel = {
             user_id:window.sessionStorage.getItem('user_id'),
             address_id:this.addressList[this.addressInfo].address_id,
             sku_info: this.skuInfo,
           }
-        console.log(JSON.stringify(sel));
         this.axios.post(
           '/orderInfo/insertOrderInfo',
         JSON.stringify(sel),
@@ -231,13 +303,13 @@ export default {
           }
         }
         ).then(res=>{
-          if(res.data === 'success'){
+          if(res.data !== 'fail'){
             this.$message({
               message: '下单成功',
               type: 'success'
             });
+            this.order_id = res.data;
             this.next();
-            location.reload();
           } else {
             this.$message({
               message: '下单失败',
@@ -246,7 +318,7 @@ export default {
           }
         })
 
-      }
+      },
     },
 
     created() {
@@ -282,6 +354,11 @@ export default {
     left: 73%;
     width: 150px;
     height: 50px;
+}
+.dialog-footer{
+
+  position: relative;
+  left: 90px;
 }
 .button{
   width: 250px;
