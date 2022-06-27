@@ -29,6 +29,11 @@ export const constantRouterMap = [
             path:'/addressInfo',
             name:'AddressInfo',
             component: () => import('@/views/foreViews/address/AddressInfo.vue')
+          },
+          {
+            path:'/orderConfig',
+            name:'OrderConfig',
+            component: () => import('@/views/foreViews/orderInfo/OrderConfig.vue')
           }
         ]
       },

@@ -13,7 +13,7 @@
          <template slot="title"><i class="el-icon-more"></i>收货地址管理</template>
       </el-menu-item>
       
-      <el-menu-item index="/" @click="checkLogin">
+      <el-menu-item index="/orderConfig" @click="checkLogin">
          <template slot="title"><i class="el-icon-price-tag"></i>订单管理</template>
       </el-menu-item>
     </el-menu>

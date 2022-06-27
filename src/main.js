@@ -14,7 +14,7 @@ Vue.use(ElementUI)
 
 
 Vue.prototype.axios = axios;
-axios.defaults.timeout=2000;
+axios.defaults.timeout=3000;
 axios.defaults.baseURL="http://localhost:8081/";
 
 

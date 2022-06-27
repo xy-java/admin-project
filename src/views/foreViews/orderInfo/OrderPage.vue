@@ -282,6 +282,7 @@ export default {
         });
       },
       goBackMain(){
+          this.time = 0;
           this.$router.push('/');
           //刷新首页
           this.$emit('refresh');
