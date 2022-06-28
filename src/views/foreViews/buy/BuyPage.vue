@@ -290,7 +290,7 @@ export default{
       this.cpList = this.parameterList.parameter_cp.split(',');
       this.seriesList = this.parameterList.parameter_series.split(',');
       this.skuInfoList = res.data[0].skuInfo[0];
-      this.imgUrl = 'http://localhost:8081/' + this.skuInfoList.img;
+      this.imgUrl = 'api/' + this.skuInfoList.img;
       this.haveStore = res.data[0].skuInfo[0].store > 0 ? '有现货' : '无现货';
     })
   },
