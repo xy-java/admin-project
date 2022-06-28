@@ -5,7 +5,7 @@
             <el-col class="el-icon-user position"></el-col>个人中心
           </el-link>
         </div>
-        <el-link class="aside-link" href="#/cartPage">
+        <el-link class="aside-link" @click="checkLogin">
           <el-col class="el-icon-shopping-cart-2 position"></el-col>购物车
         </el-link>
         <el-link class="aside-link" @click="toOrder">
@@ -29,9 +29,28 @@ export default {
   },
   methods: {
     toOrder(){
-      this.bus.$emit('isOrder',this.isOrder);
-      this.$router.push('/orderConfig');
-    }
+      if(window.sessionStorage.getItem('login_name') ==null){
+          this.$message({
+            message: '请先登陆',
+            type: 'warning'
+          });
+          this.$router.push('/');
+      }else{
+        this.bus.$emit('isOrder',this.isOrder);
+        this.$router.push('/orderConfig');
+      }
+    },
+     checkLogin(){
+        if(window.sessionStorage.getItem('login_name') ==null){
+          this.$message({
+            message: '请先登陆',
+            type: 'warning'
+          });
+          this.$router.push('/');
+        }else{
+          this.$router.push('/cartPage');
+        }
+      },
   }
 }
 </script>

@@ -5,7 +5,7 @@
       <el-col :span="5" v-for="(item,index) in searchTable" v-if="item.sku_type===type" :key="index" :offset="0">
         <a href="#/buyPage" class="ahoverList" @click="getSkuId(item)">
           <el-card class="elCard2">
-            <img :src="['http://localhost:8081/' + item.img]" class="imageList">
+            <img :src="['api/' + item.img]" class="imageList">
             <div style="text-align:center; font-size: smaller;">
               <span>{{item.sku_name}}</span>
             </div>

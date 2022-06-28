@@ -6,5 +6,15 @@ module.exports = defineConfig({
     port:8080,
     historyApiFallback: true,
     allowedHosts: "all",
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8081/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': ''
+        }
+      }
+    }
+
   }
 })

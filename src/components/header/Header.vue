@@ -13,7 +13,7 @@
       <span slot="empty" style="font-size: 10px;">购物车没有商品,赶紧选购吧！</span>
       <el-table-column >
          <template slot-scope="scope">
-          <img :src="['http://localhost:8081/' + scope.row.skuInfo.img]" style="width: 40px;height:40px">
+          <img :src="['api/' + scope.row.skuInfo.img]" style="width: 40px;height:40px">
           <span style="display: inline-block;position: absolute;top: 20px;">{{scope.row.skuInfo.sku_name}}</span>
          </template>
       </el-table-column>

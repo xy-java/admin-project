@@ -32,7 +32,7 @@
             <el-table :data="detailList">
               <el-table-column width="600px">
                 <template slot-scope="scope">
-                  <img :src="['http://localhost:8081/'+scope.row.img]" width="80px" height="80px">
+                  <img :src="['api/'+scope.row.img]" width="80px" height="80px">
                   <span style="display: inline-block;position: absolute;top: 40px;">{{scope.row.sku_name}}
                     <span v-if="scope.row.sku_type==='电脑'">&nbsp;&nbsp;{{scope.row.sku_cp}}</span>
                     <span v-if="scope.row.sku_type==='手机'">&nbsp;&nbsp;{{scope.row.sku_version}}&nbsp;&nbsp;{{scope.row.sku_color}}</span>

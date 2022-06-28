@@ -2,7 +2,7 @@
   <!-- 轮播图 -->
   <el-carousel :interval="4000" type="card" height="350px" class="elCarousel">
     <el-carousel-item v-for="item in this.carousels" :key="item.rotation_url">
-      <img :src="'http://localhost:8081/images/'+item.rotation_url" style="height:100%;width:100%;" />
+      <img :src="'api/images/'+item.rotation_url" style="height:100%;width:100%;" />
     </el-carousel-item>
   </el-carousel>
 </template>

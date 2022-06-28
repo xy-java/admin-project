@@ -16,7 +16,8 @@ let bus = new Vue();
 Vue.prototype.bus = bus;
 Vue.prototype.axios = axios;
 axios.defaults.timeout=3000;
-axios.defaults.baseURL="http://localhost:8081/";
+// axios.defaults.baseURL="http://localhost:8081/";
+axios.defaults.baseURL = '/api'
 
 
 Vue.config.productionTip = false

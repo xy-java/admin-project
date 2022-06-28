@@ -10,7 +10,7 @@
         <el-table-column type="selection" label="全选"></el-table-column>
         <el-table-column label="商品名称" width="500px">
            <template slot-scope="scope">
-              <img :src="['http://localhost:8081/'+scope.row.skuInfo.img]" width="80px" height="120px">
+              <img :src="['api/'+scope.row.skuInfo.img]" width="80px" height="120px">
               <span style="display: inline-block;position: absolute;top: 50px;">{{scope.row.skuInfo.sku_name}}
                 <span v-if="scope.row.skuInfo.sku_type==='电脑'">&nbsp;&nbsp;{{scope.row.cartInfo.sku_cp}}</span>
                 <span v-if="scope.row.skuInfo.sku_type==='手机'">&nbsp;&nbsp;{{scope.row.cartInfo.sku_version}}&nbsp;&nbsp;{{scope.row.cartInfo.sku_color}}</span>

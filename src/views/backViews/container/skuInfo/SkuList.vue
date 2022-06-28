@@ -24,7 +24,7 @@
         <el-table-column prop="sku_type" label="商品类型"></el-table-column>
         <el-table-column label="商品图片">
            <template slot-scope="scope">
-              <img :src="['http://localhost:8081/'+scope.row.img]" width="100px" height="100px">
+              <img :src="['api/'+scope.row.img]" width="100px" height="100px">
            </template>
         </el-table-column>
         <el-table-column label="操作">
@@ -55,7 +55,7 @@
         <el-table-column prop="sku_type" label="商品类型"></el-table-column>
         <el-table-column label="商品图片">
            <template slot-scope="scope">
-              <img :src="['http://localhost:8081/'+scope.row.img]" width="100px" height="100px">
+              <img :src="['api/'+scope.row.img]" width="100px" height="100px">
            </template>
         </el-table-column>
         <el-table-column label="操作">

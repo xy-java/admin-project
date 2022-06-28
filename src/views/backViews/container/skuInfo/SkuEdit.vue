@@ -18,7 +18,7 @@
     <el-form-item label="商品图片：" class="skuEditFormItem" >
       <el-upload 
         class="avatar-uploader"
-        action="http://localhost:8081/sku/upload"
+        action="api/sku/upload"
         :show-file-list="false"
         ref="upload"
         :on-success="handleAvatarSuccess"
