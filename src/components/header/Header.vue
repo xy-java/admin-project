@@ -89,7 +89,6 @@ export default {
           }
         }).then(res=>{
           this.loadCart();
-          location.reload()
         })
       },
     loginout(){
@@ -118,11 +117,22 @@ export default {
       })
       }
     },
+    loadIsLogin(){
+      this.isLogin = false;
+      this.login_name=window.sessionStorage.getItem('login_name');
+      this.isLogin=!(window.sessionStorage.getItem('isLogin'));
+    }
   },
   created() {
-    this.isLogin=!(window.sessionStorage.getItem('isLogin'));
-    this.login_name=window.sessionStorage.getItem('login_name');
     this.loadCart();
+    this.login_name=window.sessionStorage.getItem('login_name');
+    this.isLogin=!(window.sessionStorage.getItem('isLogin'));
+    this.bus.$on("loadCart",()=>{
+      this.loadCart();
+    })
+    this.bus.$on("loadIsLogin",()=>{
+      this.loadIsLogin();
+    })
   },
   beforeDestroy() {
     window.sessionStorage.clear();

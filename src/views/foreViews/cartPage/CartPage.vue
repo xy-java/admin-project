@@ -74,7 +74,7 @@ import qs from 'qs'
             cart_num
           }
         }).then(res=>{
-            location.reload()
+            this.loadCart();
         })
       },
       del(cart_id){

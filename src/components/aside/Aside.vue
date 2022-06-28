@@ -8,7 +8,7 @@
         <el-link class="aside-link" href="#/cartPage">
           <el-col class="el-icon-shopping-cart-2 position"></el-col>购物车
         </el-link>
-        <el-link class="aside-link" href="#/orderConfig">
+        <el-link class="aside-link" @click="toOrder">
           <el-col class="el-icon-setting position"></el-col>订单管理
         </el-link>
         
@@ -23,14 +23,14 @@ export default {
       return {
         isShow:{
           display:'none'
-        }
+        },
+        isOrder:false
       };
   },
   methods: {
     toOrder(){
-      this.$router.push(
-        {name:'OrderConfig'}
-      );
+      this.bus.$emit('isOrder',this.isOrder);
+      this.$router.push('/orderConfig');
     }
   }
 }

@@ -173,8 +173,7 @@ export default{
               message: '加入成功，请前往购物车查看',
               type: 'success'
             });
-            
-
+            this.bus.$emit("loadCart")
           }else{
             this.$message({
               message: '加入失败',
@@ -219,6 +218,7 @@ export default{
           if(res.data !== '新增失败'){
             window.sessionStorage.setItem("cart_id",res.data);
             this.$router.push('/orderPage');
+            this.bus.$emit("loadCart")
           }
         })
 

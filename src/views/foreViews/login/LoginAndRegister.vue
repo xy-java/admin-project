@@ -165,7 +165,6 @@ export default{
                 }
               }
             ).then(res => {
-              console.log(res)
               if(res.data != ''){
                 this.$message({
                   message:'登陆成功',
@@ -178,7 +177,8 @@ export default{
                 window.sessionStorage.setItem('passwd', res.data.passwd);
                 window.sessionStorage.setItem('isLogin', true);
                 this.$router.push('/');
-                this.$router.go(0);
+                this.bus.$emit("loadIsLogin");
+                this.bus.$emit("loadCart");
               }else{
                 this.$message({
                   message:'登陆失败,请检查用户名和密码',

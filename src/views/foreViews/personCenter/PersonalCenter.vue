@@ -12,7 +12,6 @@
       <el-menu-item index="/addressInfo" @click="checkLogin">
          <template slot="title"><i class="el-icon-more"></i>收货地址管理</template>
       </el-menu-item>
-      
       <el-menu-item index="/orderConfig" @click="checkLogin">
          <template slot="title"><i class="el-icon-price-tag"></i>订单管理</template>
       </el-menu-item>
@@ -35,6 +34,7 @@ export default  {
       return {
         login_name: '',
         isRouterAlive: true,
+        isOrder:true
       }
     },
     provide(){
@@ -44,7 +44,15 @@ export default  {
     },
     created() {
       this.login_name = window.sessionStorage.getItem('login_name');
-      this.$router.push('/personalCenter');
+      this.bus.$on("isOrder",(val)=>{
+        this.isOrder = val;
+        if(this.isOrder){
+        this.$router.push('/personalCenter');
+        }else{
+          this.$router.push('/orderConfig')
+        }
+      });
+      
     },
     methods: {
       checkLogin(){

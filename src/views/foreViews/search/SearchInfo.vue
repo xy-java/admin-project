@@ -3,7 +3,7 @@
     <el-row  v-for="type in types" :key="type">
       <el-col class="mobile">{{type}}</el-col>
       <el-col :span="5" v-for="(item,index) in searchTable" v-if="item.sku_type===type" :key="index" :offset="0">
-        <a href="/" class="ahoverList">
+        <a href="#/buyPage" class="ahoverList" @click="getSkuId(item)">
           <el-card class="elCard2">
             <img :src="['http://localhost:8081/' + item.img]" class="imageList">
             <div style="text-align:center; font-size: smaller;">
@@ -29,6 +29,9 @@ export default{
     }
   },
   methods: {
+    getSkuId(item){
+      window.sessionStorage.setItem("sku_id",item.sku_id);
+    }
   },
   created() {
     this.searchTable = JSON.parse(window.sessionStorage.getItem("skuInfoList"));
@@ -38,9 +41,7 @@ export default{
     }
     this.types = type;
   },
-  beforeDestroy() {
-    window.sessionStorage.removeItem("skuInfoList");
-  }
+  
 }
 </script>
 

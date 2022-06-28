@@ -310,6 +310,7 @@ export default {
               type: 'success'
             });
             this.order_id = res.data;
+            this.bus.$emit("loadCart")
             this.next();
           } else {
             this.$message({
