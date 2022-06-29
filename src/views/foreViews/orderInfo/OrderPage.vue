@@ -288,11 +288,18 @@ export default {
           this.$emit('refresh');
       },
       orderSure(){
-        let sel = {
+        console.log(this.addressList)
+        if(this.addressList.length===0){
+          this.$message({
+            message: '请选择收货地址',
+            type: 'error'
+          });
+        }else{
+          let sel = {
             user_id:window.sessionStorage.getItem('user_id'),
             address_id:this.addressList[this.addressInfo].address_id,
             sku_info: this.skuInfo,
-          }
+        }
         this.axios.post(
           '/orderInfo/insertOrderInfo',
         JSON.stringify(sel),
@@ -320,6 +327,7 @@ export default {
           }
         })
 
+        }
       },
     },
 

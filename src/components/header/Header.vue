@@ -30,7 +30,7 @@
     </el-table>
     <!-- 立即结算 -->
     <el-button type="primary" @click="toPay" style="width: 100%;" v-show="isShow">去购物车结算</el-button>
-    <el-link  slot="reference" class="cart-mini" :underline="false" :icon="count > 0 ? isFull : empty" href="#/cartPage">购物车<span>({{count}})</span></el-link>
+    <el-link  slot="reference" class="cart-mini" :underline="false" :icon="count > 0 ? isFull : empty" @click="checkLogin">购物车<span>({{count}})</span></el-link>
   </el-popover>
 
     <el-row class="positionLogin" v-if="isLogin">
@@ -73,6 +73,17 @@ export default {
   methods: {
     toLogin () {
       this.$router.push({name:'AdminLogin'});
+    },
+    checkLogin(){
+        if(window.sessionStorage.getItem('login_name') ==null){
+          this.$message({
+            message: '请先登陆',
+            type: 'warning'
+          });
+          this.$router.push('/');
+        }else{
+          this.$router.push('/cartPage')
+        }
     },
     toLoginPage (status) {
       //放入session

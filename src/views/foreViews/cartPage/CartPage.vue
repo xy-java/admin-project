@@ -6,7 +6,7 @@
       <el-divider></el-divider>
     </div>
     <div class="mainContext" v-if="isFull">
-      <el-table ref="cartTable" :data="cartData" class="eltable"  @select="change()" @select-all="change()" :header-cell-style="{'text-align':'center'}" >
+      <el-table ref="cartData" :data="cartData" class="eltable"  @selection-change="change" @select-all="change" :header-cell-style="{'text-align':'center'}">
         <el-table-column type="selection" label="全选"></el-table-column>
         <el-table-column label="商品名称" width="500px">
            <template slot-scope="scope">
@@ -24,7 +24,11 @@
             <el-input-number style="position: relative;" size="small" @change="getNum(scope.row.cartInfo.cart_id,scope.row.cartInfo.cart_num)" v-model="scope.row.cartInfo.cart_num" :min="1"></el-input-number>
           </template>
         </el-table-column>
-        <el-table-column label="小计（￥）" prop="sku_sum" align="center"></el-table-column>
+        <el-table-column label="小计（￥）" align="center">
+          <template slot-scope="scope">
+            <span>{{scope.row.cartInfo.cart_num*scope.row.skuInfo.price}}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button icon="el-icon-close" size="small" @click="del(scope.row.cartInfo.cart_id)" circle></el-button>
@@ -62,8 +66,8 @@ import qs from 'qs'
     },
     methods: {
       change(){
-        this.num = this.$refs.cartTable.selection.length;
-        this.sumPrice = this.$refs.cartTable.selection.reduce((total,item)=>{
+        this.num = this.$refs.cartData.selection.length;
+        this.sumPrice = this.$refs.cartData.selection.reduce((total,item)=>{
           return total + item.sku_sum;
         },0);
       },
@@ -74,7 +78,16 @@ import qs from 'qs'
             cart_num
           }
         }).then(res=>{
-            this.loadCart();
+          //实时修改小计
+          for (let i = 0; i < this.cartData.length; i++) {
+            if(this.cartData[i].cartInfo.cart_id === cart_id){
+              this.cartData[i].sku_sum = this.cartData[i].skuInfo.price * this.cartData[i].cartInfo.cart_num;
+            }
+          }
+          //修改总计
+          this.sumPrice = this.$refs.cartData.selection.reduce((total,item)=>{
+            return total + item.sku_sum;
+          },0);
         })
       },
       del(cart_id){
@@ -83,10 +96,17 @@ import qs from 'qs'
             cart_id
           }
         }).then(res=>{
-          this.loadCart();
-          this.num = 0
-          this.sumPrice = 0
-          location.reload()
+          this.bus.$emit("loadCart");
+          //isFull
+          if(this.cartData.length-1 === 0){
+            this.isFull = false;
+          }else{
+            for (let i = 0; i < this.cartData.length; i++) {
+              if(this.cartData[i].cartInfo.cart_id === cart_id){
+                this.cartData.splice(i,1);
+              }
+            }
+          }
         })
       },
       loadCart(){
@@ -103,7 +123,6 @@ import qs from 'qs'
           }else{
             this.isFull = true;
             this.cartData = res.data;
-            console.log(this.cartData);
             for (let i = 0; i < res.data.length; i++) {
               this.cartData[i].sku_sum = res.data[i].cartInfo.cart_num * res.data[i].skuInfo.price;
               this.cart_num = res.data[i].cartInfo.cart_num;
@@ -116,9 +135,9 @@ import qs from 'qs'
       },
       handleClick(){
         let ids = "";
-        for (let index = 0; index < this.$refs.cartTable.selection.length; index++) {
+        for (let index = 0; index < this.$refs.cartData.selection.length; index++) {
             //通过逗号加到字符串里
-            ids += this.$refs.cartTable.selection[index].cartInfo.cart_id + ",";
+            ids += this.$refs.cartData.selection[index].cartInfo.cart_id + ",";
         }
         if(ids===""){
           this.$message(
@@ -135,10 +154,9 @@ import qs from 'qs'
 
       }
     },
-   
     created() {
       this.loadCart();
-    },
+    }
   }
 </script>
 
