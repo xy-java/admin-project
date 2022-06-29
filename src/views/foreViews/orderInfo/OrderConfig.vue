@@ -5,7 +5,7 @@
     </el-header>
     <el-table :data="orderList">
       <el-table-column label="订单编号" prop="order_id"></el-table-column>
-      <el-table-column label="订单状态" prop="order_status">
+      <el-table-column label="付款状态" prop="order_status">
         <template slot-scope="scope">
           {{scope.row.order_status===1?'已支付':'未支付'}}
         </template>
@@ -16,6 +16,12 @@
         </template>
       </el-table-column>
       <el-table-column label="订单时间" prop="create_time" :formatter="formatData"></el-table-column>
+      <el-table-column label="订单状态" prop="isEnd" >
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.isEnd===1">已完成</el-tag>
+          <el-tag type="danger" v-else>未完成</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="getDetail(scope.row)">查看详情</el-button>
@@ -53,9 +59,11 @@
             </el-table>
             
             <div>订单时间：{{new Date(create_time).toLocaleString()}}</div>
-            <el-button type="text" class="buttonInfo" v-if="order_status===0" @click="payNow(scope.row.order_id)">立即支付</el-button>
+            <el-button class="buttonInfo" v-if="order_status===0" @click="payNow(scope.row.order_id)">立即支付</el-button>
             <el-button class="buttonCancel"  v-if="order_status===0" @click="deleteOrder(scope.row.order_id)">取消订单</el-button>
-            <el-button class="buttonInfo"  v-else @click="deleteOrder(scope.row.order_id)">确认收货</el-button>
+            <el-button class="buttonInfo"  v-else-if="isEnd===0" @click="updateEnd(scope.row.order_id)">确认收货</el-button>
+            <el-button class="buttonInfo" v-if="isEnd===1" @click="deleteOrder(scope.row.order_id)">删除订单</el-button>
+            <el-button class="buttonCancel" v-if="isEnd===1"  @click="dialogDetail = false">关闭</el-button>
           </el-dialog>
           
           <el-button type="text" class="button" size="small" v-if="scope.row.order_status===0" @click="payNow(scope.row.order_id)">立即支付</el-button>
@@ -68,7 +76,8 @@
           </div>
         </el-dialog>
           <el-button class="button"  type="text" size="small" v-if="scope.row.order_status===0" @click="deleteOrder(scope.row.order_id)">取消订单</el-button>
-          <el-button class="button" type="text" size="small" v-else @click="deleteOrder(scope.row.order_id)">确认收货</el-button>
+          <el-button class="button" type="text" size="small" v-else-if="scope.row.isEnd===0" @click="updateEnd(scope.row.order_id)">确认收货</el-button>
+          <el-button class="button" type="text" size="small" v-else @click="deleteOrder(scope.row.order_id)">删除订单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,6 +102,7 @@ export default {
         address_level3: '',
         address_info: '',
         order_status: 0,
+        isEnd:0,
         create_time: '',
         detailList: [],
       };
@@ -144,6 +154,7 @@ export default {
       this.dialogDetail = true;
       this.order_id = scope.order_id;
       this.order_status = scope.order_status;
+      this.isEnd = scope.isEnd;
       this.create_time = scope.create_time;
       this.loadAddress(scope.address_id);
       this.loadDetailList(scope.order_id);
@@ -171,6 +182,32 @@ export default {
             this.dialogDetail = false;
             this.$message({
                 message: '操作成功',
+                type: 'success'
+              });
+              this.loadOrderList();
+          }
+        })
+      })
+    },
+    updateEnd(order_id){
+      //确认操作
+      this.$confirm('确认收到货了吗', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.axios.get(
+          '/orderInfo/updateEnd',
+          {
+            params: {
+              order_id: order_id
+            }
+          }
+        ).then(res=>{
+          if(res.data === '修改成功'){
+            this.dialogDetail = false;
+            this.$message({
+                message: '收货成功，订单完成',
                 type: 'success'
               });
               this.loadOrderList();
