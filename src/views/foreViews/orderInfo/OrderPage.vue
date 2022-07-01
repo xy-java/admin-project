@@ -98,8 +98,8 @@
         <!-- 支付按钮，模拟支付操作 -->
         <el-radio-group style="display:inline-block;margin-top:20px;margin-right: 10px;" v-model="checkPay">
             <el-radio border label="1"><img src="@/assets/120_348_白底.png" style="height: 80%; width:80%;display: inline-block;vertical-align: middle;"></el-radio>
-            <!-- <el-radio border label="2" style="vertical-align: top;">微信支付</el-radio> -->
         </el-radio-group>
+
         <el-dialog :title="'支付成功'" :visible.sync="dialog" width="16%" center>
           <div>
             <p style="margin-top: 20px;text-align: center;">点击按钮继续</p>
@@ -110,7 +110,8 @@
         </el-dialog>
         
         <el-button class="backButton" @click="goBackPay" style="position: relative;top:480px;left: 480px;"><i class="el-icon-arrow-left"></i>返回购物车</el-button>
-        <el-button class="orderButton" @click="payment" style="position: relative;top:480px;left: 500px;">立即支付</el-button>
+        <el-button class="orderButton" @click="pay" style="position: relative;top:480px;left: 500px;">立即支付</el-button>
+        <!-- <el-button class="orderButton" @click="payment" style="position: relative;top:480px;left: 500px;">立即支付</el-button> -->
       </div>
       <div v-else class="commonDiv">
         <div style="text-align: center;">订单完成，将于{{time}}秒后跳转至首页</div>
@@ -153,9 +154,34 @@ export default {
         if(this.active++>1){
           this.active = 0 ;
         }
-          sessionStorage.setItem('active', this.active );
+        window.sessionStorage.setItem('active', this.active );
       },
-      
+      pay(){
+        let info = {
+            order_id: this.order_id,
+            order_name: this.skuInfo[0].sku_name,
+            total_amount: this.sku_price,
+            goods_detail: this.skuInfo,
+            pages: 'orderPage',
+        }
+        console.log(info)
+        this.axios.post(
+          '/orderInfo/pay',
+          JSON.stringify(info),
+          {
+          //设置请求头
+            headers:{
+              'Content-Type':'application/json'
+            }
+          }
+        ).then(res=>{
+          console.log(res.data);
+          const div = document.createElement('div');
+          div.innerHTML=res.data;
+          document.body.appendChild(div)
+          document.forms[0].submit() //重要，这个才是点击跳页面的核心
+        })
+      },
       payment(){
         let info = {
             order_id : this.order_id,
@@ -245,10 +271,14 @@ export default {
             }
           }
         ).then(res=>{
-          this.skuInfo = res.data;
-          for(let i=0;i<this.skuInfo.length;i++){
-            this.sku_num += parseInt(this.skuInfo[i].order_num);
-            this.sku_price += parseInt(this.skuInfo[i].order_price*this.skuInfo[i].order_num);
+          if(res.data.length===0){
+            this.$router.push('/')
+          }else{
+            this.skuInfo = res.data;
+            for(let i=0;i<this.skuInfo.length;i++){
+              this.sku_num += parseInt(this.skuInfo[i].order_num);
+              this.sku_price += parseInt(this.skuInfo[i].order_price*this.skuInfo[i].order_num);
+            }
           }
         })
       },

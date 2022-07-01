@@ -217,6 +217,7 @@ export default{
         ).then(res=>{
           if(res.data !== '新增失败'){
             window.sessionStorage.setItem("cart_id",res.data);
+            window.sessionStorage.setItem("active",0);
             this.$router.push('/orderPage');
             this.bus.$emit("loadCart")
           }

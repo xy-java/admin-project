@@ -59,14 +59,15 @@
             </el-table>
             
             <div>订单时间：{{new Date(create_time).toLocaleString()}}</div>
-            <el-button class="buttonInfo" v-if="order_status===0" @click="payNow(scope.row.order_id)">立即支付</el-button>
-            <el-button class="buttonCancel"  v-if="order_status===0" @click="deleteOrder(scope.row.order_id)">取消订单</el-button>
-            <el-button class="buttonInfo"  v-else-if="isEnd===0" @click="updateEnd(scope.row.order_id)">确认收货</el-button>
-            <el-button class="buttonInfo" v-if="isEnd===1" @click="deleteOrder(scope.row.order_id)">删除订单</el-button>
+            <el-button class="buttonInfo" v-if="order_status===0" @click="payFor(order_id1,total_amount)">立即支付</el-button>
+            <el-button class="buttonCancel"  v-if="order_status===0" @click="deleteOrder(order_id1)">取消订单</el-button>
+            <el-button class="buttonInfo"  v-else-if="isEnd===0" @click="updateEnd(order_id1)">确认收货</el-button>
+            <el-button class="buttonInfo" v-if="isEnd===1" @click="deleteOrder(order_id1)">删除订单</el-button>
             <el-button class="buttonCancel" v-if="isEnd===1"  @click="dialogDetail = false">关闭</el-button>
           </el-dialog>
           
-          <el-button type="text" class="button" size="small" v-if="scope.row.order_status===0" @click="payNow(scope.row.order_id)">立即支付</el-button>
+          <el-button type="text" class="button" size="small" v-if="scope.row.order_status===0" @click="payNow(scope.row)">立即支付</el-button>
+
           <el-dialog :title="'支付成功'" :visible.sync="dialog" width="16%" center>
           <div>
             <p style="margin-top: 20px;text-align: center;">点击按钮继续</p>
@@ -105,6 +106,7 @@ export default {
         isEnd:0,
         create_time: '',
         detailList: [],
+        total_amount: 0,
       };
   },
   methods: {
@@ -130,7 +132,6 @@ export default {
         }
       ).then(res=>{
         this.detailList = res.data;
-        console.log(this.detailList)
       })
     },
     loadAddress(address_id){
@@ -153,6 +154,8 @@ export default {
     getDetail(scope){
       this.dialogDetail = true;
       this.order_id = scope.order_id;
+      this.order_id1 = scope.order_id;
+      this.total_amount = scope.total_amount;
       this.order_status = scope.order_status;
       this.isEnd = scope.isEnd;
       this.create_time = scope.create_time;
@@ -215,10 +218,58 @@ export default {
         })
       })
     },
-    payNow(order_id){
-      this.dialog = true;
-      this.order_id = order_id;
+    payFor(order_id,total_amount){
+      let info = {
+            order_id: order_id,
+            order_name: '订单支付',
+            total_amount: total_amount,
+            goods_detail: '',
+            pages: 'orderConfig',
+        }
+        console.log(info)
+        this.axios.post(
+          '/orderInfo/pay',
+          JSON.stringify(info),
+          {
+          //设置请求头
+            headers:{
+              'Content-Type':'application/json'
+            }
+          }
+        ).then(res=>{
+          console.log(res.data);
+          const div = document.createElement('div');
+          div.innerHTML=res.data;
+          document.body.appendChild(div)
+          document.forms[0].submit()
+        })
     },
+    payNow(row){
+        let info = {
+            order_id: row.order_id,
+            order_name: '订单支付',
+            total_amount: row.total_amount,
+            goods_detail: '',
+            pages: 'orderConfig',
+        }
+        console.log(info)
+        this.axios.post(
+          '/orderInfo/pay',
+          JSON.stringify(info),
+          {
+          //设置请求头
+            headers:{
+              'Content-Type':'application/json'
+            }
+          }
+        ).then(res=>{
+          console.log(res.data);
+          const div = document.createElement('div');
+          div.innerHTML=res.data;
+          document.body.appendChild(div)
+          document.forms[0].submit()
+        })
+      },
     payment(){
         this.dialog = false;
         this.dialogDetail = false;
