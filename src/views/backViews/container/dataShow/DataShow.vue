@@ -1,8 +1,8 @@
 <template>
   <div style="width:100%;height:100%;">
     <div class="main">
-      <el-card class="elcard1" shadow="hover">用户人数：26人</el-card>
-      <el-card class="elcard2" shadow="hover">销售总额：226600元</el-card>
+      <el-card class="elcard1" shadow="hover">用户人数：{{count}}人</el-card>
+      <el-card class="elcard2" shadow="hover">销售总额：{{sumPrice}}元</el-card>
     </div>
     
     <div class="myecharts">
@@ -22,9 +22,19 @@
           option1:{},
           option2:{},
           option3:{},
+          count:0,
+          sumPrice:0,
         }
       },
       methods: {
+        loadCount(){
+          this.axios.get(
+            'sqoop/userCount'
+          ).then(res=>{
+            this.count = res.data.count;
+            this.sumPrice = res.data.sumPrice;
+          })
+        },
         getDataList(){
           var categoryData =[];
           var time = new Date();
@@ -151,6 +161,7 @@
       },
       mounted() {
         this.load();
+        this.loadCount();
       },
   }
 </script>
