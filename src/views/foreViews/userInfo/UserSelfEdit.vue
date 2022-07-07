@@ -10,7 +10,7 @@
     <el-form-item class="form_item" label="密码：" prop="passwd">
       <el-input placeholder="请输入密码" v-model="userInfoEditForm.passwd" show-password></el-input>
     </el-form-item>
-    <el-form-item class="form_item" label="邮箱：" prop="email">
+    <el-form-item class="form_item" label="手机号：" prop="email">
       <el-input placeholder="请输入名称" v-model="userInfoEditForm.email"  prop="email"></el-input>
     </el-form-item>
     <el-form-item class="form_item" label="角色：">
@@ -45,6 +45,18 @@
           }
         })
       };
+      const validatePhone = (rule,value,callback)=>{
+        if (!value){
+          callback(new Error('手机号不能为空！'));
+        }
+        //使用正则表达式进行验证手机号码
+        if (!/^1[3456789]\d{9}$/.test(value)){
+          callback(new Error('手机号不正确！'));
+        }
+        else{
+          callback();
+        }
+    }
       return {
         userInfoEditForm:{
           login_name:'',
@@ -72,7 +84,7 @@
           {max: 16, message: '输入不大于十六位的字母和数字',trigger: 'blur'}
           ],
           email:[
-            { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+            { validator:validatePhone, trigger: 'blur' }
           ]
           
         }

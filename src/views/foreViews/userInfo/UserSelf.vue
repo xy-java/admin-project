@@ -9,7 +9,7 @@
     <el-form-item class="user-form-item" label="密码：" prop="passwd">
       <el-input placeholder="请输入密码" v-model="userInfoForm.passwd" show-password disabled></el-input>
     </el-form-item>
-    <el-form-item class="user-form-item" label="邮箱：" prop="email">
+    <el-form-item class="user-form-item" label="手机号：" prop="email">
       <el-input placeholder="请输入名称" v-model="userInfoForm.email"  prop="email" disabled></el-input>
     </el-form-item>
     <el-form-item class="user-form-item" label="角色：" >
