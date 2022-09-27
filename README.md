@@ -1,5 +1,7 @@
 # admin-project
+#商城项目前端
 
+后端代码在https://github.com/xy-java/mall-project.git
 ## Project setup
 ```
 npm install
